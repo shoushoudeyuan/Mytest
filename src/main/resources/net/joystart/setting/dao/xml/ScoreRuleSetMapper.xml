@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.setting.dao.ScoreRuleSetMapper">
+	<resultMap id="BaseResultMap" type="net.joystart.setting.entity.ScoreRuleSet">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="sendType" property="sendtype" jdbcType="TINYINT" />
+		<result column="costMoney" property="costmoney" jdbcType="INTEGER" />
+		<result column="sendScore" property="sendscore" jdbcType="DECIMAL" />
+		<result column="status" property="status" jdbcType="TINYINT" />
+		<result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+		<result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, sendType, costMoney, sendScore, status, createDate, modifyDate
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_base_score_set
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from t_base_score_set
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="net.joystart.setting.entity.ScoreRuleSet">
+		insert into t_base_score_set (id, sendType, costMoney,
+		sendScore, status, createDate,
+		modifyDate)
+		values (#{id,jdbcType=INTEGER}, #{sendtype,jdbcType=TINYINT},
+		#{costmoney,jdbcType=INTEGER},
+		#{sendscore,jdbcType=DECIMAL}, #{status,jdbcType=TINYINT}, #{createdate,jdbcType=TIMESTAMP},
+		#{modifydate,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="net.joystart.setting.entity.ScoreRuleSet">
+		insert into t_base_score_set
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="sendtype != null">
+				sendType,
+			</if>
+			<if test="costmoney != null">
+				costMoney,
+			</if>
+			<if test="sendscore != null">
+				sendScore,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="createdate != null">
+				createDate,
+			</if>
+			<if test="modifydate != null">
+				modifyDate,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="sendtype != null">
+				#{sendtype,jdbcType=TINYINT},
+			</if>
+			<if test="costmoney != null">
+				#{costmoney,jdbcType=INTEGER},
+			</if>
+			<if test="sendscore != null">
+				#{sendscore,jdbcType=DECIMAL},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="createdate != null">
+				#{createdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifydate != null">
+				#{modifydate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="net.joystart.setting.entity.ScoreRuleSet">
+		update t_base_score_set
+		<set>
+			<if test="sendtype != null">
+				sendType = #{sendtype,jdbcType=TINYINT},
+			</if>
+			<if test="costmoney != null">
+				costMoney = #{costmoney,jdbcType=INTEGER},
+			</if>
+			<if test="sendscore != null">
+				sendScore = #{sendscore,jdbcType=DECIMAL},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="createdate != null">
+				createDate = #{createdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifydate != null">
+				modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="net.joystart.setting.entity.ScoreRuleSet">
+		update t_base_score_set
+		set sendType = #{sendtype,jdbcType=TINYINT},
+		costMoney = #{costmoney,jdbcType=INTEGER},
+		sendScore = #{sendscore,jdbcType=DECIMAL},
+		status = #{status,jdbcType=TINYINT},
+		createDate = #{createdate,jdbcType=TIMESTAMP},
+		modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		SELECT
+		<include refid="Base_Column_List" />
+		from t_base_score_set
+		order by id desc
+		LIMIT
+		#{startIndex,jdbcType=INTEGER},
+		#{pageSize,jdbcType=INTEGER};
+	</select>
+	<select id="selectCount" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		SELECT
+			count(id)
+		from t_base_score_set
+		order by id desc
+	</select>
+		<select id="selectBySengType" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		SELECT
+		<include refid="Base_Column_List" />
+		from t_base_score_set
+		where `status` = 1 and sendType = #{sendType,jdbcType=TINYINT}
+	</select>
+</mapper>

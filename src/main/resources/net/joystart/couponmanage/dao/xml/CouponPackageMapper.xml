@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.couponmanage.dao.CouponPackageMapper" >
+
+  <select id="selectById" parameterType="java.lang.Integer" resultType="net.joystart.couponmanage.entity.CouponPackageItem"  >
+    select * from t_base_coupon_package_item where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectCouponPackageItem" parameterType="Map" resultType="net.joystart.couponmanage.entity.CouponPackageItem" >
+  	SELECT * FROM t_base_coupon_package_item 
+  	where isDelete = 0 and packageId=#{packageId,jdbcType=INTEGER}
+    order by createDate desc
+    <if test="pageSize != null">
+    LIMIT #{pageIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </if>
+  </select>
+  
+  <select id="selectCouponPackageItemCount" parameterType="Map" resultType="Integer">
+  	SELECT count(*) FROM t_base_coupon_package_item  
+  	where isDelete = 0 and packageId=#{packageId,jdbcType=INTEGER}
+   </select>
+   
+  <update id="deleteCouponPackageItem" parameterType="Map">
+  	update t_base_coupon_package_item set isDelete = 1 
+  	where id in 
+  	<foreach item="cid" collection="ids" index="index" open="(" separator="," close=")">
+  		#{cid}
+  	</foreach>
+  </update>
+   
+  <insert id="insertCouponPackageItem" parameterType="net.joystart.couponmanage.entity.CouponPackageItem">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_base_coupon_package_item
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="packageId != null">
+        packageId,
+      </if>
+      <if test="couponName != null">
+        couponName,
+      </if>
+      <if test="couponConfigId != null">
+        couponConfigId,
+      </if>
+      <if test="couponCount != null">
+        couponCount,
+      </if>
+      <if test="isEnable != null">
+        isEnable,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="packageId != null">
+        #{packageId,jdbcType=INTEGER},
+      </if>
+      <if test="couponName != null">
+        #{couponName,jdbcType=VARCHAR},
+      </if>
+      <if test="couponConfigId != null">
+        #{couponConfigId,jdbcType=INTEGER},
+      </if>
+      <if test="couponCount != null">
+        #{couponCount,jdbcType=INTEGER},
+      </if>
+      <if test="isEnable != null">
+        #{isEnable,jdbcType=BIT},
+      </if>
+    </trim>
+  </insert>
+  
+  <insert id="createCouponPackage" parameterType="net.joystart.couponmanage.entity.CouponPackage">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+  	insert into t_base_coupon_package
+  	 <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="pkgname != null">
+        pkgname,
+      </if>
+      <if test="creater != null">
+        creater,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="pkgname != null">
+        #{pkgname,jdbcType=VARCHAR},
+      </if>
+	  <if test="creater != null">
+        #{creater,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateCouponPackageItem" parameterType="net.joystart.couponmanage.entity.CouponPackageItem">
+    update t_base_coupon_package_item
+    <set>
+      <if test="couponName != null">
+        couponName = #{couponName,jdbcType=VARCHAR},
+      </if>
+      <if test="couponConfigId != null">
+        couponConfigId = #{couponConfigId,jdbcType=INTEGER},
+      </if>
+      <if test="couponCount != null">
+        couponCount = #{couponCount,jdbcType=INTEGER},
+      </if>
+      <if test="isEnable != null">
+        isEnable = #{isEnable,jdbcType=BIT},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+	
+</mapper>

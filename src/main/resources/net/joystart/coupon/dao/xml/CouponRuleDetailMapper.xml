@@ -1,0 +1,347 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.coupon.dao.CouponRuleDetailMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.coupon.entity.CouponRuleDetail" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="ruleIdentification" property="ruleidentification" jdbcType="VARCHAR" />
+    <result column="presentMoney" property="presentmoney" jdbcType="DECIMAL" />
+    <result column="usingType" property="usingtype" jdbcType="TINYINT" />
+    <result column="timeControl" property="timecontrol" jdbcType="TINYINT" />
+    <result column="validDay" property="validday" jdbcType="INTEGER" />
+    <result column="reamark" property="reamark" jdbcType="VARCHAR" />
+    <result column="introduction" property="introduction" jdbcType="VARCHAR" />
+    <result column="imgUrl" property="imgurl" jdbcType="VARCHAR" />
+    <result column="basicMoney" property="basicmoney" jdbcType="DECIMAL" />
+    <result column="accumulativeNum" property="accumulativenum" jdbcType="INTEGER" />
+    <result column="holiday" property="holiday" jdbcType="TIMESTAMP" />
+    <result column="presentCoumt" property="presentcoumt" jdbcType="INTEGER" />
+    <result column="isPostpone" property="ispostpone" jdbcType="INTEGER" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="weekType" property="weektype" jdbcType="TINYINT" />
+    <result column="carTypeId" property="cartypeid" jdbcType="INTEGER" />
+    <result column="needIntegrate" property="needintegrate" jdbcType="INTEGER" />
+    <result column="orderPercent" property="orderpercent" jdbcType="INTEGER" />
+    <result column="invitationCode" property="invitationcode" jdbcType="VARCHAR" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    d.id, ruleIdentification, presentMoney, usingType, timeControl, validDay, reamark, 
+    introduction, imgUrl, basicMoney, accumulativeNum, holiday, presentCoumt, isPostpone, 
+    content, weekType, carTypeId, needIntegrate, orderPercent, invitationCode, d.createDate, 
+    d.modifyDate,d.type,d.topDiscountMoney,d.discount
+  </sql>
+  <sql id="Base_ColumnNoId_List" >
+     ruleIdentification, presentMoney, usingType, timeControl, validDay, reamark, 
+    introduction, imgUrl, basicMoney, accumulativeNum, holiday, presentCoumt, isPostpone, 
+    content, weekType, carTypeId, needIntegrate, orderPercent, invitationCode
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_coupon_rule_item
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_base_coupon_rule_item
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.joystart.coupon.entity.CouponRuleDetail" >
+    insert into t_base_coupon_rule_item (id, ruleIdentification, presentMoney, 
+      usingType, timeControl, validDay, 
+      reamark, introduction, imgUrl, 
+      basicMoney, accumulativeNum, holiday, 
+      presentCoumt, isPostpone, content, 
+      weekType, carTypeId, needIntegrate, 
+      orderPercent, invitationCode, createDate, 
+      modifyDate)
+    values (#{id,jdbcType=INTEGER}, #{ruleidentification,jdbcType=VARCHAR}, #{presentmoney,jdbcType=DECIMAL}, 
+      #{usingtype,jdbcType=TINYINT}, #{timecontrol,jdbcType=TINYINT}, #{validday,jdbcType=INTEGER}, 
+      #{reamark,jdbcType=VARCHAR}, #{introduction,jdbcType=VARCHAR}, #{imgurl,jdbcType=VARCHAR}, 
+      #{basicmoney,jdbcType=DECIMAL}, #{accumulativenum,jdbcType=INTEGER}, #{holiday,jdbcType=TIMESTAMP}, 
+      #{presentcoumt,jdbcType=INTEGER}, #{ispostpone,jdbcType=INTEGER}, #{content,jdbcType=VARCHAR}, 
+      #{weektype,jdbcType=TINYINT}, #{cartypeid,jdbcType=INTEGER}, #{needintegrate,jdbcType=INTEGER}, 
+      #{orderpercent,jdbcType=INTEGER}, #{invitationcode,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP}, 
+      #{modifydate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="net.joystart.coupon.entity.CouponRuleDetail" >
+    insert into t_base_coupon_rule_item
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="ruleidentification != null" >
+        ruleIdentification,
+      </if>
+      <if test="presentmoney != null" >
+        presentMoney,
+      </if>
+      <if test="usingtype != null" >
+        usingType,
+      </if>
+      <if test="timecontrol != null" >
+        timeControl,
+      </if>
+      <if test="validday != null" >
+        validDay,
+      </if>
+      <if test="reamark != null" >
+        reamark,
+      </if>
+      <if test="introduction != null" >
+        introduction,
+      </if>
+      <if test="imgurl != null" >
+        imgUrl,
+      </if>
+      <if test="basicmoney != null" >
+        basicMoney,
+      </if>
+      <if test="accumulativenum != null" >
+        accumulativeNum,
+      </if>
+      <if test="holiday != null" >
+        holiday,
+      </if>
+      <if test="presentcoumt != null" >
+        presentCoumt,
+      </if>
+      <if test="ispostpone != null" >
+        isPostpone,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="weektype != null" >
+        weekType,
+      </if>
+      <if test="cartypeid != null" >
+        carTypeId,
+      </if>
+      <if test="needintegrate != null" >
+        needIntegrate,
+      </if>
+      <if test="orderpercent != null" >
+        orderPercent,
+      </if>
+      <if test="invitationcode != null" >
+        invitationCode,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="ruleidentification != null" >
+        #{ruleidentification,jdbcType=VARCHAR},
+      </if>
+      <if test="presentmoney != null" >
+        #{presentmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="usingtype != null" >
+        #{usingtype,jdbcType=TINYINT},
+      </if>
+      <if test="timecontrol != null" >
+        #{timecontrol,jdbcType=TINYINT},
+      </if>
+      <if test="validday != null" >
+        #{validday,jdbcType=INTEGER},
+      </if>
+      <if test="reamark != null" >
+        #{reamark,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="imgurl != null" >
+        #{imgurl,jdbcType=VARCHAR},
+      </if>
+      <if test="basicmoney != null" >
+        #{basicmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="accumulativenum != null" >
+        #{accumulativenum,jdbcType=INTEGER},
+      </if>
+      <if test="holiday != null" >
+        #{holiday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="presentcoumt != null" >
+        #{presentcoumt,jdbcType=INTEGER},
+      </if>
+      <if test="ispostpone != null" >
+        #{ispostpone,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="weektype != null" >
+        #{weektype,jdbcType=TINYINT},
+      </if>
+      <if test="cartypeid != null" >
+        #{cartypeid,jdbcType=INTEGER},
+      </if>
+      <if test="needintegrate != null" >
+        #{needintegrate,jdbcType=INTEGER},
+      </if>
+      <if test="orderpercent != null" >
+        #{orderpercent,jdbcType=INTEGER},
+      </if>
+      <if test="invitationcode != null" >
+        #{invitationcode,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.joystart.coupon.entity.CouponRuleDetail" >
+    update t_base_coupon_rule_item
+    <set >
+      <if test="ruleidentification != null" >
+        ruleIdentification = #{ruleidentification,jdbcType=VARCHAR},
+      </if>
+      <if test="presentmoney != null" >
+        presentMoney = #{presentmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="usingtype != null" >
+        usingType = #{usingtype,jdbcType=TINYINT},
+      </if>
+      <if test="timecontrol != null" >
+        timeControl = #{timecontrol,jdbcType=TINYINT},
+      </if>
+      <if test="validday != null" >
+        validDay = #{validday,jdbcType=INTEGER},
+      </if>
+      <if test="reamark != null" >
+        reamark = #{reamark,jdbcType=VARCHAR},
+      </if>
+      <if test="introduction != null" >
+        introduction = #{introduction,jdbcType=VARCHAR},
+      </if>
+      <if test="imgurl != null" >
+        imgUrl = #{imgurl,jdbcType=VARCHAR},
+      </if>
+      <if test="basicmoney != null" >
+        basicMoney = #{basicmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="accumulativenum != null" >
+        accumulativeNum = #{accumulativenum,jdbcType=INTEGER},
+      </if>
+      <if test="holiday != null" >
+        holiday = #{holiday,jdbcType=TIMESTAMP},
+      </if>
+      <if test="presentcoumt != null" >
+        presentCoumt = #{presentcoumt,jdbcType=INTEGER},
+      </if>
+      <if test="ispostpone != null" >
+        isPostpone = #{ispostpone,jdbcType=INTEGER},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="weektype != null" >
+        weekType = #{weektype,jdbcType=TINYINT},
+      </if>
+      <if test="cartypeid != null" >
+        carTypeId = #{cartypeid,jdbcType=INTEGER},
+      </if>
+      <if test="needintegrate != null" >
+        needIntegrate = #{needintegrate,jdbcType=INTEGER},
+      </if>
+      <if test="orderpercent != null" >
+        orderPercent = #{orderpercent,jdbcType=INTEGER},
+      </if>
+      <if test="invitationcode != null" >
+        invitationCode = #{invitationcode,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.joystart.coupon.entity.CouponRuleDetail" >
+    update t_base_coupon_rule_item
+    set ruleIdentification = #{ruleidentification,jdbcType=VARCHAR},
+      presentMoney = #{presentmoney,jdbcType=DECIMAL},
+      usingType = #{usingtype,jdbcType=TINYINT},
+      timeControl = #{timecontrol,jdbcType=TINYINT},
+      validDay = #{validday,jdbcType=INTEGER},
+      reamark = #{reamark,jdbcType=VARCHAR},
+      introduction = #{introduction,jdbcType=VARCHAR},
+      imgUrl = #{imgurl,jdbcType=VARCHAR},
+      basicMoney = #{basicmoney,jdbcType=DECIMAL},
+      accumulativeNum = #{accumulativenum,jdbcType=INTEGER},
+      holiday = #{holiday,jdbcType=TIMESTAMP},
+      presentCoumt = #{presentcoumt,jdbcType=INTEGER},
+      isPostpone = #{ispostpone,jdbcType=INTEGER},
+      content = #{content,jdbcType=VARCHAR},
+      weekType = #{weektype,jdbcType=TINYINT},
+      carTypeId = #{cartypeid,jdbcType=INTEGER},
+      needIntegrate = #{needintegrate,jdbcType=INTEGER},
+      orderPercent = #{orderpercent,jdbcType=INTEGER},
+      invitationCode = #{invitationcode,jdbcType=VARCHAR},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- 根据标识获取优惠卷规则详细 -->
+   <select id="selectByIdentification" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_coupon_rule r join t_base_coupon_rule_item d 
+    on r.identification = d.ruleIdentification 
+    where d.ruleidentification = #{ruleidentification,jdbcType=VARCHAR} and r.`status` = 1
+    order by d.needIntegrate
+  </select>
+   <select id="selectValidCouponByIdentification" resultMap="BaseResultMap" parameterType="java.lang.String" >
+        select i.type, i.discount, i.presentMoney, i.presentCoumt from t_base_coupon_rule r 
+        left join t_base_coupon_rule_item i on r.identification = i.ruleIdentification
+        where i.ruleidentification = #{ruleidentification} and r.status = 1
+  </select>
+  <select id="selectDetailById" resultMap="BaseResultMap" parameterType="net.joystart.coupon.entity.CouponRuleDetail" >
+    select
+    <include refid="Base_Column_List" />
+    from t_base_coupon_rule r join t_base_coupon_rule_item d 
+    on r.identification = d.ruleIdentification
+    where d.id = #{id,jdbcType=INTEGER}
+     <if test="status != null" >
+         and r.`status` = #{status}
+      </if>
+  </select>
+  <!-- 获取推广商的优惠卷规则 -->
+  <select id="getItemByInvitationCode" resultType="net.joystart.coupon.entity.RuleItem" parameterType="java.lang.String" >
+    SELECT 
+        ri.`id`,
+        ri.`presentMoney`,
+        ri.`usingType`,
+        ri.`timeControl`,
+        ri.`validDay`,
+        ri.`isPostpone`,
+        ri.`presentCoumt`,
+        ri.`reamark`
+    FROM `t_base_customer` c
+    INNER JOIN `t_promotion_person` pp ON c.`id` = pp.`bindCustomerId`
+    INNER JOIN `t_base_coupon_rule_item` ri ON pp.`businessId` = ri.`businessID`
+	INNER JOIN `t_promotion_business` pb ON pp.`businessId` = pb.`id`
+    WHERE c.invitationCode = #{invitationCode,jdbcType=VARCHAR}
+	AND pp.`isDelete` = 0 AND pb.`isDelete` = 0
+  </select>
+  
+  <select id="getCouponItemByBusinessId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select * from t_base_coupon_rule_item where businessID = #{businessId}
+  </select>
+  
+</mapper>

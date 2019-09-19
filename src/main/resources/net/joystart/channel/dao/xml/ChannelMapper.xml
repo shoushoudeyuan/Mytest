@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.channel.dao.ChannelMapper">
+	<resultMap id="BaseResultMap" type="net.joystart.channel.entity.Channel">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="channelName" property="channelName" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="INTEGER" />
+		<result column="createDate" property="createDate" jdbcType="TIMESTAMP" />
+		<result column="startDate" property="startDate" jdbcType="TIMESTAMP" />
+		<result column="endDate" property="endDate" jdbcType="TIMESTAMP" />
+		<result column="channelCode" property="channelCode" jdbcType="VARCHAR" />
+		<result column="activityUrl" property="activityUrl" jdbcType="VARCHAR" />
+		<result column="activityHomeImg" property="activityHomeImg" jdbcType="VARCHAR" />
+		<result column="activityAppImg" property="activityAppImg" jdbcType="VARCHAR" />
+		<result column="iosDownloadUrl" property="iosDownloadUrl" jdbcType="VARCHAR" />
+		<result column="androidDownloadUrl" property="androidDownloadUrl" jdbcType="VARCHAR" />
+		<result column="couponPackageId" property="couponPackageId" jdbcType="INTEGER" />
+	</resultMap>
+
+	<select id="getChannelList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select * from t_base_channel
+		where 1 = 1
+		<if test="channelName != null">
+			and channelName like CONCAT('%',#{channelName},'%')
+		</if>
+		<if test="channelCode != null">
+			and channelCode like CONCAT('%',#{channelCode},'%')
+		</if>
+		<if test="status != null">
+			and status = #{status}
+		</if>
+		order by createDate desc
+		<if test="startIndex != null and pageSize != null">
+			limit #{startIndex}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getChannelUserListByChannelCode" resultType="net.joystart.channel.entity.ChannelUser" parameterType="java.util.Map">
+		SELECT c.userName, c.name, c.createDate registerDate, c.identityApprove isApprove, c.memberType isMember, c.isCanOrder,
+		l.login_time loginDate from t_base_customer c 
+		LEFT JOIN 
+		(SELECT customer_id, MAX(login_time) login_time from t_customer_login_log GROUP BY customer_id) l 
+		ON c.id = l.customer_id
+		WHERE 1 = 1
+		<if test="isApprove != null">
+			and c.identityApprove = #{isApprove}
+		</if>
+		<if test="isMember != null">
+			and c.memberType = #{isMember}
+		</if>
+		<if test="isCanOrder != null">
+			and c.isCanOrder = #{isCanOrder}
+		</if>
+		<if test="registerStartDate != null and registerEndDate">
+			and c.createDate &gt; #{registerStartDate} and c.createDate &lt; #{registerEndDate}
+		</if>
+		<if test="channelCode != null">
+			and c.recommendCode = #{channelCode}
+		</if>
+		ORDER BY c.createDate DESC
+		<if test="startIndex != null and pageSize != null">
+			LIMIT #{startIndex}, #{pageSize}
+		</if>
+	</select>
+	
+	<select id="getChannelUserListCountByChannelCode" resultType="int" parameterType="java.util.Map">
+		SELECT count(*) from t_base_customer c
+		WHERE 1 = 1
+		<if test="isApprove != null">
+			and c.identityApprove = #{isApprove}
+		</if>
+		<if test="isMember != null">
+			and c.memberType = #{isMember}
+		</if>
+		<if test="isCanOrder != null">
+			and c.isCanOrder = #{isCanOrder}
+		</if>
+		<if test="registerStartDate != null and registerEndDate">
+			and c.createDate &gt; #{registerStartDate} and c.createDate &lt; #{registerEndDate}
+		</if>
+		<if test="channelCode != null">
+			and c.recommendCode = #{channelCode}
+		</if>
+	</select>
+
+	<select id="getChannelByChannelCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select * from t_base_channel where channelCode =
+		#{channelCode}
+	</select>
+
+	<select id="getChannelListCount" resultType="java.lang.Integer" parameterType="java.util.Map">
+		select count(*) from t_base_channel
+		where 1 = 1
+		<if test="channelName != null">
+			and channelName like CONCAT('%',#{channelName},'%')
+		</if>
+		<if test="channelCode != null">
+			and channelCode like CONCAT('%',#{channelCode},'%')
+		</if>
+		<if test="status != null">
+			and status = #{status}
+		</if>
+	</select>
+
+	<insert id="insertChannel" parameterType="net.joystart.channel.entity.Channel" useGeneratedKeys="true">
+		insert into t_base_channel
+		(
+		channelName,
+		status,
+		createDate,
+		startDate,
+		endDate,
+		channelCode,
+		activityUrl,
+		activityHomeImg,
+		activityAppImg,
+		iosDownloadUrl,
+		androidDownloadUrl
+		)
+		values
+		(
+		#{channelName},
+		#{status},
+		#{createDate},
+		#{startDate},
+		#{endDate},
+		#{channelCode},
+		#{activityUrl},
+		#{activityHomeImg},
+		#{activityAppImg},
+		#{iosDownloadUrl},
+		#{androidDownloadUrl}
+
+		)
+	</insert>
+
+	<update id="updateChannelById" parameterType="net.joystart.channel.entity.Channel">
+		update t_base_channel
+		<set>
+			<if test="channelName != null">
+				channelName = #{channelName},
+			</if>
+			<if test="status != null">
+				status = #{status},
+			</if>
+			<if test="createDate != null">
+				createDate = #{createDate},
+			</if>
+			<if test="startDate != null">
+				startDate = #{startDate},
+			</if>
+			<if test="endDate != null">
+				endDate = #{endDate},
+			</if>
+			<if test="channelCode != null">
+				channelCode = #{channelCode},
+			</if>
+			<if test="activityUrl != null">
+				activityUrl = #{activityUrl},
+			</if>
+			<if test="activityHomeImg != null">
+				activityHomeImg = #{activityHomeImg},
+			</if>
+			<if test="activityAppImg != null">
+				activityAppImg = #{activityAppImg},
+			</if>
+			<if test="iosDownloadUrl != null">
+				iosDownloadUrl = #{iosDownloadUrl},
+			</if>
+			<if test="androidDownloadUrl != null">
+				androidDownloadUrl = #{androidDownloadUrl}
+			</if>
+		</set>
+		where id = #{id}
+	</update>
+
+	<delete id="deleteChannelById" parameterType="java.lang.Integer">
+		delete from
+		t_base_channel where id = #{id}
+	</delete>
+
+	<update id="updateCouponPackageId" parameterType="java.util.HashMap">
+  		update t_base_channel set couponPackageId = #{couponPackageId,jdbcType=INTEGER} where id = #{id,jdbcType=INTEGER}
+  	</update>
+</mapper>

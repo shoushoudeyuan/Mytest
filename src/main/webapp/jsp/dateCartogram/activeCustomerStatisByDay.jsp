@@ -1,0 +1,226 @@
+<%@ page language="java" pageEncoding="UTF-8"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<%@ include file="../common/header.jsp"%>
+<title>每日新注册的新用户数</title>
+<link rel="stylesheet" href="../../css/jquery.fancybox.css"
+	type="text/css" />
+<script type="text/javascript" src="../../js/jquery.fancybox.pack.js"></script>
+<script type="text/javascript" src="../../js/util/extendValidate.js"></script>
+<style type="text/css">
+html{
+overflow: auto;
+}
+.botton{
+padding: 5px 10px;
+background-color: #22ab39;
+border-radius:5px;
+border:0px;
+color: #fff;
+font-size: 14px;
+width:120px;
+margin:0px 10px 10px 0px;
+font-family: "Microsoft YaHei UI Light", "瀵邦喛钂嬮梿鍛寸拨";
+}
+.botton:hover{
+background-color: #145d20;
+}
+
+</style>
+<body>
+<div class="list_title">
+	<span class="layui-parent-title-customer">HOME</span>
+    <span class="layui-badge-dot layui-bg-title"></span>
+    <span class="layui-children-title-customer">每日新增会员统计</span>
+</div>
+	<div class="text_input">
+		<span class="div_search_customerBar"></span>
+		<div class="form_item">
+				<div class="form_item_inline">
+					<label class="form_item_label4">起始日期</label>
+					<div class="form_item_input">
+						<input id="createStartTime" type="text" name="createStartTime"
+				class="easyui-datebox" />
+					</div>
+				</div>
+				<div class="form_item_inline">
+					<label class="form_item_label4">结束日期</label>
+					<div class="form_item_input">
+						<input id="createEndTime"
+				type="text" name="createEndTime" class="easyui-datebox" />
+					</div>
+				</div>
+				<div class="form_item_inline">
+					<input type="button" onclick="SetChart()"
+				class="text_input_button_search" value="查询">
+				</div>
+			</div>
+	</div>
+    <script src="http://echarts.baidu.com/build/dist/echarts.js"></script>
+    <div class="table_data">
+		<h4 class="table_data_title">每日新增会员统计</h4>
+    	<div id="main" style="height:400px"></div>
+    	<div class="main_search">
+        <div id="dateDiv" style="width: 98%; margin: 0px auto;">
+        </div>
+        <div>
+        	 <table id="dg"  style="width:100%;"></table>
+        
+        </div>
+</div>
+    </div>
+<script type="text/javascript">
+	var myChart; 
+	var eCharts; 
+	// 路径配置
+	require.config({
+		paths : {
+			echarts : 'http://echarts.baidu.com/build/dist'
+		}
+	});
+	$(function(){
+		SetChart();
+	});
+	var categories = [];  
+	function SetChart()
+	{
+		require([ 'echarts', 'echarts/chart/line', 'echarts/chart/bar' // 使用柱状图就加载bar模块，按需加载
+		],  function (ec) {
+			var createStartTimes = $('#createStartTime').datetimebox('getValue');
+			var createEndTimes = $('#createEndTime').datetimebox('getValue');
+	        // 基于准备好的dom，初始化echarts图表
+	        eCharts = ec; 
+	        myChart = ec.init(document.getElementById('main'));
+	        myChart.showLoading({ 
+	            text : "图表数据正在努力加载..." 
+	        });
+	        
+	        var values = [];  
+	        $.ajax({
+	            type : "POST",
+	            data:{
+	            	createStartTime:createStartTimes,
+	            	createEndTime:createEndTimes
+	            },
+	            url : "<%=request.getContextPath()%>/customerStatic/activeCustomerStatisByDay",
+	            dataType : "json",
+	            async: false,//同步
+	            success : function(result) {
+	            	if(result.code='10000'){
+	            		 categories = result.data.categories;  
+	                	 values = result.data.values; 
+	                	 $("#createStartTime").datebox("setValue",result.data.createStartTimeTemp);
+	                	 $("#createEndTime").datebox("setValue",result.data.createEndTimeTemp);
+	                	 $("#dateDiv").empty();
+	                	  $.each(categories, function(i,val){
+	                		  
+	                          var divTxt = '<button name="btnU" type="button" onclick="addCustomerBody(\''+val+'\')" class="botton" value="'+val+'"><span>'+val+'</span></button>';
+	                          $("#dateDiv").append(divTxt);
+	                      });
+	                	 
+	            	}else{
+	            		$.messager.alert('操作提示', result.message);
+	            	}
+	            }
+	        });
+	
+	
+	        var option = {
+	            //图表标题
+	            title: {
+	                text: "每日新增会员数", //正标题
+	                x: "center", //标题水平方向位置
+	                //正标题样式
+	                textStyle: {
+	                    fontSize:24
+	                },
+	                //副标题样式
+	                subtextStyle: {
+	                    fontSize:12,
+	                    color:"red"
+	                }
+	            },
+	            //数据提示框配置
+	            tooltip: {
+	                trigger: 'axis' //触发类型，默认数据触发，见下图，可选为：'item' | 'axis' 其实就是是否共享提示框
+	            },
+	            //图例配置
+	            legend: {
+	                data: ['会员注册'], //这里需要与series内的每一组数据的name值保持一致
+	                y:"bottom"
+	            },
+	            //工具箱配置
+	            toolbox: {
+	                show : true,
+	                feature : {
+	                    restore : {show: true}, // 还原，复位原始图表，上图icon左数9，还原
+	                    saveAsImage : {show: true} // 保存为图片，上图icon左数10，保存
+	                }
+	            },
+	            calculable: true,
+	            //轴配置
+	            xAxis: [
+	                {
+	                    type: 'category',
+	                    data: categories,
+	                    name: "日期"
+	                }
+	            ],
+	            //Y轴配置
+	            yAxis: [
+	                {
+	                    type: 'value',
+	                    splitArea: { show: true },
+	                    name:"数值"
+	                }
+	            ],
+	            //图表Series数据序列配置
+	            series: [
+	                {
+	                    name: '会员注册',
+	                    type: 'line',
+	                    data: values
+	                }
+	            ]
+	        };
+	        // 为echarts对象加载数据
+	        myChart.setOption(option);
+	        myChart.hideLoading(); 
+	    }
+	);
+}
+</script>
+
+
+
+<script>
+        
+        function addCustomerBody(date){
+       	 $('#dg').datagrid({
+  			url:'/bjycrm/customer/selectByDate?staticDate='+date,
+  			toolbar:$('#toolbar'),
+  			rownumbers:true,
+  			emptyMsg:'无数据',
+  		    columns:[[
+  				{field:'id',hidden:true,title:'id'}, 
+  		        {field:'bc_name',title:'姓名',width:'15%'},
+  		        {field:'bc_mobile',title:'手机号',width:'15%'},
+  		        {field:'bc_recommendCode',title:'推荐人邀请码',width:'15%'},
+  		        {field:'bct_name',title:'推荐人姓名',width:'15%'},
+  		       {field:'email',title:'渠道来源',width:'15%'},
+  		       {field:'createdate',title:'扫码时间',width:'15%'},
+  		      {field:'bc_createDate',title:'注册时间',width:'15%'}
+  		    ]],
+  		    pagination:false,
+  			onBeforeSelect:function(){
+  				return false;
+  			}
+  		});
+        }
+    </script>
+
+
+
+</body>

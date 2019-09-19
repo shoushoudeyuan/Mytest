@@ -1,0 +1,248 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.activity.dao.ActivitiesMapper">
+	<resultMap id="BaseResultMap" type="net.joystart.activity.entity.Activities">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="activityName" property="activityname" jdbcType="VARCHAR" />
+		<result column="startDate" property="startdate" jdbcType="TIMESTAMP" />
+		<result column="endDate" property="enddate" jdbcType="TIMESTAMP" />
+		<result column="isDisable" property="isdisable" jdbcType="TINYINT" />
+		<result column="isPublish" property="ispublish" jdbcType="TINYINT" />
+		<result column="exchangeLimit" property="exchangelimit"
+			jdbcType="TINYINT" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="isDelete" property="isdelete" jdbcType="TINYINT" />
+		<result column="activityLink" property="activitylink" jdbcType="VARCHAR" />
+		<result column="couponRuleID" property="couponruleid" jdbcType="INTEGER" />
+		<result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+		<result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, activityName, startDate, endDate, isDisable, isPublish,
+		exchangeLimit, remark,
+		isDelete, activityLink, couponRuleID, createDate, modifyDate
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_base_activity
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<!-- 分页获取活动列表 -->
+	<select id="getActivities" resultMap="BaseResultMap">
+		select
+		a.id,
+		a.activityname,
+		cr.identification,
+		a.startdate,
+		a.enddate,
+		a.isdisable,
+		a.ispublish,
+		a.exchangelimit,
+		a.remark,
+		a.activityLink,
+		a.couponruleid,		
+		a.createdate,
+		a.modifydate,
+		cr.ruleName as couponrulename
+		from t_base_activity a
+		inner join t_base_coupon_rule cr on a.couponruleid=cr.id		
+		where a.isDelete=0
+		<if test="activityName != null">
+		and a.activityName like CONCAT('%',#{activityName,jdbcType=VARCHAR},'%')
+		</if>
+		order by a.id DESC
+		limit
+		#{rowStart,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER} 
+	</select>
+	<!-- 获取活动数量 -->
+	<select id="getActivityCount" resultType="java.lang.Integer">
+		select
+		count(1)
+		from t_base_activity a
+		inner join t_base_coupon_rule cr on a.couponruleid=cr.id	
+		where a.isDelete=0
+		<if test="activityName != null">
+		and a.activityName like CONCAT('%',#{activityName,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from t_base_activity
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="net.joystart.activity.entity.Activities">
+		insert into t_base_activity (id, activityName, startDate,
+		endDate, isDisable, isPublish,
+		exchangeLimit, remark, isDelete,
+		activityLink, couponRuleID, createDate,
+		modifyDate)
+		values (#{id,jdbcType=INTEGER}, #{activityname,jdbcType=VARCHAR},
+		#{startdate,jdbcType=TIMESTAMP},
+		#{enddate,jdbcType=TIMESTAMP}, #{isdisable,jdbcType=TINYINT}, #{ispublish,jdbcType=TINYINT},
+		#{exchangelimit,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR},
+		#{isdelete,jdbcType=TINYINT},
+		#{activitylink,jdbcType=VARCHAR}, #{couponruleid,jdbcType=INTEGER}, #{createdate,jdbcType=TIMESTAMP},
+		#{modifydate,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="net.joystart.activity.entity.Activities">
+		insert into t_base_activity
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="activityname != null">
+				activityName,
+			</if>
+			<if test="startdate != null">
+				startDate,
+			</if>
+			<if test="enddate != null">
+				endDate,
+			</if>
+			<if test="isdisable != null">
+				isDisable,
+			</if>
+			<if test="ispublish != null">
+				isPublish,
+			</if>
+			<if test="exchangelimit != null">
+				exchangeLimit,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="isdelete != null">
+				isDelete,
+			</if>
+			<if test="activitylink != null">
+				activityLink,
+			</if>
+			<if test="couponruleid != null">
+				couponRuleID,
+			</if>
+			<if test="createdate != null">
+				createDate,
+			</if>
+			<if test="modifydate != null">
+				modifyDate,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="activityname != null">
+				#{activityname,jdbcType=VARCHAR},
+			</if>
+			<if test="startdate != null">
+				#{startdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="enddate != null">
+				#{enddate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isdisable != null">
+				#{isdisable,jdbcType=TINYINT},
+			</if>
+			<if test="ispublish != null">
+				#{ispublish,jdbcType=TINYINT},
+			</if>
+			<if test="exchangelimit != null">
+				#{exchangelimit,jdbcType=TINYINT},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="isdelete != null">
+				#{isdelete,jdbcType=TINYINT},
+			</if>
+			<if test="activitylink != null">
+				#{activitylink,jdbcType=VARCHAR},
+			</if>
+			<if test="couponruleid != null">
+				#{couponruleid,jdbcType=INTEGER},
+			</if>
+			<if test="createdate != null">
+				#{createdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifydate != null">
+				#{modifydate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="net.joystart.activity.entity.Activities">
+		update t_base_activity
+		<set>
+			<if test="activityname != null">
+				activityName = #{activityname,jdbcType=VARCHAR},
+			</if>
+			<if test="startdate != null">
+				startDate = #{startdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="enddate != null">
+				endDate = #{enddate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isdisable != null">
+				isDisable = #{isdisable,jdbcType=TINYINT},
+			</if>
+			<if test="ispublish != null">
+				isPublish = #{ispublish,jdbcType=TINYINT},
+			</if>
+			<if test="exchangelimit != null">
+				exchangeLimit = #{exchangelimit,jdbcType=TINYINT},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="isdelete != null">
+				isDelete = #{isdelete,jdbcType=TINYINT},
+			</if>
+			<if test="activitylink != null">
+				activityLink = #{activitylink,jdbcType=VARCHAR},
+			</if>
+			<if test="couponruleid != null">
+				couponRuleID = #{couponruleid,jdbcType=INTEGER},
+			</if>
+			<if test="createdate != null">
+				createDate = #{createdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifydate != null">
+				modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="net.joystart.activity.entity.Activities">
+		update t_base_activity
+		set activityName = #{activityname,jdbcType=VARCHAR},
+		startDate = #{startdate,jdbcType=TIMESTAMP},
+		endDate = #{enddate,jdbcType=TIMESTAMP},
+		isDisable = #{isdisable,jdbcType=TINYINT},
+		isPublish = #{ispublish,jdbcType=TINYINT},
+		exchangeLimit = #{exchangelimit,jdbcType=TINYINT},
+		remark = #{remark,jdbcType=VARCHAR},
+		isDelete = #{isdelete,jdbcType=TINYINT},
+		activityLink = #{activitylink,jdbcType=VARCHAR},
+		couponRuleID = #{couponruleid,jdbcType=INTEGER},
+		createDate = #{createdate,jdbcType=TIMESTAMP},
+		modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<!-- 逻辑批量删除活动 -->
+	<update id="deleteActivity" parameterType="java.util.HashMap">
+		update t_base_activity
+		set isDelete = 1
+		where id in
+		<foreach item="id" index="index" collection="array" open="(" separator="," close=")">
+		#{id}
+		</foreach>
+	</update>
+	<select id="getActivityByRuleID" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_base_activity
+		where isDelete=0
+		and  couponRuleID = #{ruleID}
+	</select>
+</mapper>

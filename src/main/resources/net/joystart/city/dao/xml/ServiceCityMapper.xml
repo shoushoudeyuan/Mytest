@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.city.dao.ServiceCityMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.city.entity.ServiceCity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="provinceID" property="provinceid" jdbcType="INTEGER" />
+    <result column="cityID" property="cityid" jdbcType="INTEGER" />
+    <result column="countyID" property="countyid" jdbcType="INTEGER" />
+    <result column="realName" property="realname" jdbcType="VARCHAR" />
+    <result column="showName" property="showname" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="showOrder" property="showorder" jdbcType="INTEGER" />
+    <result column="cityLon" property="citylon" jdbcType="DOUBLE" />
+    <result column="cityLat" property="citylat" jdbcType="DOUBLE" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, provinceID, cityID, countyID, realName, showName, status, showOrder, cityLon, 
+    cityLat, createDate, modifyDate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_service_city
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_base_service_city
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.joystart.city.entity.ServiceCity" >
+    insert into t_base_service_city (id, provinceID, cityID, 
+      countyID, realName, showName, 
+      status, showOrder, cityLon, 
+      cityLat, createDate
+      )
+    values (#{id,jdbcType=INTEGER}, #{provinceid,jdbcType=INTEGER}, #{cityid,jdbcType=INTEGER}, 
+      #{countyid,jdbcType=INTEGER}, #{realname,jdbcType=VARCHAR}, #{showname,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{showorder,jdbcType=INTEGER}, #{citylon,jdbcType=DOUBLE}, 
+      #{citylat,jdbcType=DOUBLE}, #{createdate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="net.joystart.city.entity.ServiceCity" >
+    insert into t_base_service_city
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="provinceid != null" >
+        provinceID,
+      </if>
+      <if test="cityid != null" >
+        cityID,
+      </if>
+      <if test="countyid != null" >
+        countyID,
+      </if>
+      <if test="realname != null" >
+        realName,
+      </if>
+      <if test="showname != null" >
+        showName,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="showorder != null" >
+        showOrder,
+      </if>
+      <if test="citylon != null" >
+        cityLon,
+      </if>
+      <if test="citylat != null" >
+        cityLat,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="provinceid != null" >
+        #{provinceid,jdbcType=INTEGER},
+      </if>
+      <if test="cityid != null" >
+        #{cityid,jdbcType=INTEGER},
+      </if>
+      <if test="countyid != null" >
+        #{countyid,jdbcType=INTEGER},
+      </if>
+      <if test="realname != null" >
+        #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="showname != null" >
+        #{showname,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="showorder != null" >
+        #{showorder,jdbcType=INTEGER},
+      </if>
+      <if test="citylon != null" >
+        #{citylon,jdbcType=DOUBLE},
+      </if>
+      <if test="citylat != null" >
+        #{citylat,jdbcType=DOUBLE},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.joystart.city.entity.ServiceCity" >
+    update t_base_service_city
+    <set >
+      <if test="provinceid != null" >
+        provinceID = #{provinceid,jdbcType=INTEGER},
+      </if>
+      <if test="cityid != null" >
+        cityID = #{cityid,jdbcType=INTEGER},
+      </if>
+      <if test="countyid != null" >
+        countyID = #{countyid,jdbcType=INTEGER},
+      </if>
+      <if test="realname != null" >
+        realName = #{realname,jdbcType=VARCHAR},
+      </if>
+      <if test="showname != null" >
+        showName = #{showname,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="showorder != null" >
+        showOrder = #{showorder,jdbcType=INTEGER},
+      </if>
+      <if test="citylon != null" >
+        cityLon = #{citylon,jdbcType=DOUBLE},
+      </if>
+      <if test="citylat != null" >
+        cityLat = #{citylat,jdbcType=DOUBLE},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.joystart.city.entity.ServiceCity" >
+    update t_base_service_city
+    set provinceID = #{provinceid,jdbcType=INTEGER},
+      cityID = #{cityid,jdbcType=INTEGER},
+      countyID = #{countyid,jdbcType=INTEGER},
+      realName = #{realname,jdbcType=VARCHAR},
+      showName = #{showname,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      showOrder = #{showorder,jdbcType=INTEGER},
+      cityLon = #{citylon,jdbcType=DOUBLE},
+      cityLat = #{citylat,jdbcType=DOUBLE},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByCityName" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select
+    id,showName
+    from t_base_service_city
+    where status = 1 and (realname like #{fullname} or realname like #{name})
+    <if test="countyName != null" >
+      	and (realname like #{countyName} or realname like #{smallcountyName})
+     </if>
+     LIMIT 1
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from t_base_service_city
+    where status = 1
+  </select>
+  <select id="getServerCity" resultType="net.joystart.city.entity.ServiceCity">
+   SELECT 
+		`id`,
+		`showname` 
+	FROM
+		`t_base_service_city`
+	WHERE STATUS=1
+  </select>
+
+   <select id="count" parameterType="java.util.Map" resultType="java.lang.Integer">
+	   SELECT
+		  count(id) count
+		from t_base_service_city
+		where 1=1
+		<if test="username != null" >
+        	and showName = #{showName,jdbcType=VARCHAR}
+	      </if>
+  </select>
+  <select id="list" parameterType="java.util.Map" resultType="net.joystart.city.entity.ServiceCity">
+	   SELECT
+	 	<include refid="Base_Column_List" />
+		from t_base_service_city
+		where 1=1
+		<if test="id != null" >
+        	and id = #{id}
+	      </if>
+		 <if test="showName != null" >
+        	and showName like #{showName}
+	      </if>
+		limit #{startIndex},#{pageSize}
+  
+  </select>
+  
+  <select id="getAllCityIdStr" resultType="java.lang.String">
+        select group_concat(id) from t_base_service_city
+  </select>
+  
+</mapper>

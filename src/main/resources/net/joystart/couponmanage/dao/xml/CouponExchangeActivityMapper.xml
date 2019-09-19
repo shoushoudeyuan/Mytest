@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.couponmanage.dao.CouponExchangeActivityMapper" >
+  
+  <resultMap id="BaseResultMap" type="net.joystart.couponmanage.entity.CouponExchangeActivity" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="activity_name" property="activityName" jdbcType="VARCHAR" />
+    <result column="exchange_count" property="exchangeCount" jdbcType="INTEGER" />
+    <result column="coupon_package_id" property="couponPackageId" jdbcType="INTEGER" />
+    <result column="isdelete" property="isDelete" jdbcType="INTEGER" />
+    <result column="isenable" property="isEnable" jdbcType="INTEGER" />
+    <result column="enddate" property="endDate" jdbcType="TIMESTAMP" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="createdate" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="modifydate" property="modifyDate" jdbcType="TIMESTAMP" />
+    <result column="usedCount" property="usedCount" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id,activity_name,exchange_count,coupon_package_id,isdelete,isenable,enddate,remark,createdate,modifydate
+  </sql>
+  
+  <sql id="selectSql" >
+    SELECT id,activity_name,exchange_count,coupon_package_id,isdelete,isenable,enddate,remark,createdate,modifydate,
+    (select count(1) as countoo from t_base_coupon_exchange_code WHERE activity_id=activity.id and isexchanged=2) as usedCount
+    FROM t_base_coupon_exchange_activity activity
+  </sql>
+  
+  <sql id="selectCondition" >
+    <if test="activityName != null">
+        and activity_name like CONCAT('%',#{activityName},'%')
+    </if>
+    <if test="selectIds != null">
+        and id in (${selectIds}) 
+    </if>
+  </sql>
+  
+  <select id="getCouponExchangeActivityList" parameterType="java.util.HashMap" resultMap="BaseResultMap" >
+    <include refid="selectSql" />
+     where isdelete=1
+    <include refid="selectCondition" />
+    order by id desc
+    <if test="startIndex != null">
+        LIMIT #{startIndex}, #{pageSize}
+    </if>
+  </select>
+  
+  <select id="getCouponExchangeActivityById" parameterType="java.util.HashMap" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_coupon_exchange_activity
+    where id = #{id}
+  </select>
+  
+  <select id="getCouponExchangeActivityCount" parameterType="java.util.HashMap" resultType="java.lang.Integer" >
+    select count(1) as countoo from (
+    <include refid="selectSql" />
+     where isdelete=1
+    <include refid="selectCondition" />
+    ) a
+  </select>
+  
+ <insert id="insertCouponExchangeActivity" parameterType="net.joystart.couponmanage.entity.CouponExchangeActivity">
+    INSERT INTO t_base_coupon_exchange_activity
+    (activity_name,exchange_count,coupon_package_id,isdelete,isenable,enddate,
+    <if test="remark != null" >
+    remark,
+    </if>
+    createdate,modifydate)
+    VALUES
+    (#{activityName}, #{exchangeCount},#{couponPackageId},1,#{isEnable},#{endDate,jdbcType=TIMESTAMP},
+    <if test="remark != null" >
+    #{remark},
+    </if>
+    now(),now())
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+  </insert>
+  
+ <update id="updateCouponExchangeActivity" parameterType="net.joystart.couponmanage.entity.CouponExchangeActivity" >
+    update t_base_coupon_exchange_activity
+    <set>
+      <if test="activityName != null" >
+        activity_name = #{activityName},
+      </if>
+      <if test="isDelete != null" >
+        isdelete = #{isDelete},
+      </if>
+      <if test="isEnable != null" >
+        isenable = #{isEnable},
+      </if>
+      <if test="endDate != null" >
+        enddate = #{endDate},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark},
+      </if>
+      modifydate = now()
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="deleteCouponExchangeActivity" parameterType="java.util.List">
+    update t_base_coupon_exchange_activity set isdelete = 2 
+    where id in 
+    <foreach collection="list" item="value" open="(" separator="," close=")">
+        #{value}
+    </foreach>
+  </update>
+  
+</mapper>

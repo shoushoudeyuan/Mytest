@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.coupon.dao.SharePlanMapper" >
+<resultMap id="BaseResultMap" type="net.joystart.coupon.entity.SharePlan" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="customerId" property="customerid" jdbcType="INTEGER" />
+    <result column="startTime" property="starttime" jdbcType="TIMESTAMP" />
+    <result column="endTime" property="endtime" jdbcType="TIMESTAMP" />
+    <result column="plateNumber" property="platenumber" jdbcType="VARCHAR" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, customerId, startTime, endTime, plateNumber, createDate, modifyDate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_share_plan
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_share_plan
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.joystart.coupon.entity.SharePlan" >
+    insert into t_share_plan (id, customerId, startTime, 
+      endTime, plateNumber, createDate, 
+      modifyDate)
+    values (#{id,jdbcType=INTEGER}, #{customerid,jdbcType=INTEGER}, #{starttime,jdbcType=TIMESTAMP}, 
+      #{endtime,jdbcType=TIMESTAMP}, #{platenumber,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP}, 
+      #{modifydate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="net.joystart.coupon.entity.SharePlan" >
+    insert into t_share_plan
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="customerid != null" >
+        customerId,
+      </if>
+      <if test="starttime != null" >
+        startTime,
+      </if>
+      <if test="endtime != null" >
+        endTime,
+      </if>
+      <if test="platenumber != null" >
+        plateNumber,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="customerid != null" >
+        #{customerid,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null" >
+        #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="platenumber != null" >
+        #{platenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.joystart.coupon.entity.SharePlan" >
+    update t_share_plan
+    <set >
+      <if test="customerid != null" >
+        customerId = #{customerid,jdbcType=INTEGER},
+      </if>
+      <if test="starttime != null" >
+        startTime = #{starttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endtime != null" >
+        endTime = #{endtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="platenumber != null" >
+        plateNumber = #{platenumber,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.joystart.coupon.entity.SharePlan" >
+    update t_share_plan
+    set customerId = #{customerid,jdbcType=INTEGER},
+      startTime = #{starttime,jdbcType=TIMESTAMP},
+      endTime = #{endtime,jdbcType=TIMESTAMP},
+      plateNumber = #{platenumber,jdbcType=VARCHAR},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- 获取共享计划列表 -->
+   <select id="getSharePlanList" resultType="net.joystart.coupon.entity.SharePlan" parameterType="java.util.HashMap" >
+    SELECT 
+    	sp.`id`,
+		c.`userName`,
+		c.`name`,
+		sp.`startTime`,	
+		sp.`endTime`,
+		sp.`plateNumber`	
+	FROM `t_share_plan` sp
+	INNER JOIN `t_base_customer` c
+	ON sp.`customerId` = c.`id`
+	where 1=1
+	<if test="username != null" >
+      	 and c.username like #{username,jdbcType=VARCHAR}
+      </if>
+      <if test="platenumber != null" >
+     	 and sp.plateNumber like #{platenumber,jdbcType=VARCHAR}
+     	</if>
+      <if test="starttime != null" >
+      	 and sp.`startTime` &gt;= #{starttime,jdbcType=TIMESTAMP}
+      </if>
+      <if test="endtime != null" >
+      	 and sp.`endtime` &lt;= #{endtime,jdbcType=TIMESTAMP}
+      </if>
+      LIMIT #{startIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER};
+ </select>
+ 
+ <!-- 获取共享计划列表数量 -->
+   <select id="getSharePlanListCount" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    SELECT 
+    	count(*) `count`	
+	FROM `t_share_plan` sp
+	INNER JOIN `t_base_customer` c
+	ON sp.`customerId` = c.`id`
+	where 1=1
+	<if test="username != null" >
+     	 and c.username like #{username,jdbcType=VARCHAR}
+     </if>
+     <if test="platenumber != null" >
+     	 and sp.plateNumber like #{platenumber,jdbcType=VARCHAR}
+     </if>
+     <if test="starttime != null" >
+     	 and sp.`startTime` &gt;= #{starttime,jdbcType=TIMESTAMP}
+     </if>
+     <if test="endtime != null" >
+     	 and sp.`endtime` &lt;= #{endtime,jdbcType=TIMESTAMP}
+     </if>
+     LIMIT #{startIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER};
+ </select>
+ 
+  
+  <!-- 验证用户名是否存在 -->
+  <select id="getCustomerByUserName" resultType="net.joystart.customer.entity.Customer" parameterType="net.joystart.customer.entity.Customer" >
+	    SELECT 
+	    	id,
+			username,
+			isDisable,
+			isdelete
+		FROM `t_base_customer`
+		WHERE username = #{username,jdbcType=VARCHAR}
+  </select>
+</mapper>

@@ -1,0 +1,2 @@
+dataSourceFilter=net.joystart.common.interceptor.DataSourceFilter
+providerFilter=net.joystart.common.interceptor.ProviderFilter

@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.customerservice.dao.AnswerQuestionMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.customerservice.entity.AnswerQuestion" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="customerMobile" property="customermobile" jdbcType="VARCHAR" />
+    <result column="customerName" property="customername" jdbcType="VARCHAR" />
+    <result column="questionCategoryId" property="questioncategoryid" jdbcType="INTEGER" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="dealWithStatus" property="dealwithstatus" jdbcType="TINYINT" />
+    <result column="orderId" property="orderid" jdbcType="INTEGER" />
+    <result column="orderNo" property="orderno" jdbcType="VARCHAR" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, customerMobile, customerName, questionCategoryId, remark, dealWithStatus, orderId,orderNo, 
+    createDate, modifyDate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_service_answer_question
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 分页获取问题列表 -->
+	<select id="getAnswerQuestions" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select
+		aq.id, 
+		aq.customermobile, 
+		aq.customername, 
+		qc.name as questioncategoryname, 
+		aq.remark, 
+		aq.dealwithstatus,
+		aq.orderId, 
+		aq.orderno,
+		aq.createdate,
+		v.platenumber 
+		from t_service_answer_question aq
+		inner join t_service_question_category qc on aq.questionCategoryId=qc.id 
+		left join t_order o on aq.orderId=o.id
+		left join t_base_vehicle v on o.vehicleId=v.id
+		where 1=1 
+		<if test="orderno != null">
+		and aq.orderNo like CONCAT('%',#{orderno,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="platenumber != null">
+		and v.platenumber like CONCAT('%',#{platenumber,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="customermobile != null">
+		and aq.customerMobile like CONCAT('%',#{customermobile,jdbcType=VARCHAR},'%')
+		</if>
+		order by aq.id DESC
+		limit
+		#{rowStart,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER} 
+	</select>
+	<!-- 获取问题数量 -->
+	<select id="getAnswerQuestionCount" resultType="java.lang.Integer"
+		 parameterType="java.util.HashMap">
+		select
+		count(1)
+		from t_service_answer_question aq
+		inner join t_service_question_category qc on aq.questionCategoryId=qc.id 
+		left join t_order o on aq.orderId=o.id
+		left join t_base_vehicle v on o.vehicleId=v.id
+		where 1=1 
+		<if test="orderno != null">
+		and aq.orderNo like CONCAT('%',#{orderno,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="platenumber != null">
+		and v.platenumber like CONCAT('%',#{platenumber,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="customermobile != null">
+		and aq.customerMobile like CONCAT('%',#{customermobile,jdbcType=VARCHAR},'%')
+		</if>
+	</select>
+	
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_service_answer_question
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.joystart.customerservice.entity.AnswerQuestion" >
+    insert into t_service_answer_question (id, customerMobile, customerName, 
+      questionCategoryId, remark, dealWithStatus, orderId,
+      orderNo, createDate, modifyDate
+      )
+    values (#{id,jdbcType=INTEGER}, #{customermobile,jdbcType=VARCHAR}, #{customername,jdbcType=VARCHAR}, 
+      #{questioncategoryid,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR}, #{dealwithstatus,jdbcType=TINYINT}, 
+      #{orderid,jdbcType=INTEGER}, #{orderno,jdbcType=VARCHAR}, #{createdate,jdbcType=TIMESTAMP}, #{modifydate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="net.joystart.customerservice.entity.AnswerQuestion" >
+    insert into t_service_answer_question
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="customermobile != null" >
+        customerMobile,
+      </if>
+      <if test="customername != null" >
+        customerName,
+      </if>
+      <if test="questioncategoryid != null" >
+        questionCategoryId,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="dealwithstatus != null" >
+        dealWithStatus,
+      </if>
+      <if test="orderid != null" >
+        orderid,
+      </if>
+      <if test="orderno != null" >
+        orderNo,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="customermobile != null" >
+        #{customermobile,jdbcType=VARCHAR},
+      </if>
+      <if test="customername != null" >
+        #{customername,jdbcType=VARCHAR},
+      </if>
+      <if test="questioncategoryid != null" >
+        #{questioncategoryid,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="dealwithstatus != null" >
+        #{dealwithstatus,jdbcType=TINYINT},
+      </if>
+      <if test="orderid != null" >
+        #{orderid,jdbcType=INTEGER},
+      </if>      
+      <if test="orderno != null" >
+        #{orderno,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.joystart.customerservice.entity.AnswerQuestion" >
+    update t_service_answer_question
+    <set >
+      <if test="customermobile != null" >
+        customerMobile = #{customermobile,jdbcType=VARCHAR},
+      </if>
+      <if test="customername != null" >
+        customerName = #{customername,jdbcType=VARCHAR},
+      </if>
+      <if test="questioncategoryid != null" >
+        questionCategoryId = #{questioncategoryid,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="dealwithstatus != null" >
+        dealWithStatus = #{dealwithstatus,jdbcType=TINYINT},
+      </if>
+      <if test="orderid != null" >
+        orderid = #{orderid,jdbcType=INTEGER},
+      </if>  
+      <if test="orderno != null" >
+        orderNo = #{orderno,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.joystart.customerservice.entity.AnswerQuestion" >
+    update t_service_answer_question
+    set customerMobile = #{customermobile,jdbcType=VARCHAR},
+      customerName = #{customername,jdbcType=VARCHAR},
+      questionCategoryId = #{questioncategoryid,jdbcType=INTEGER},
+      remark = #{remark,jdbcType=VARCHAR},
+      dealWithStatus = #{dealwithstatus,jdbcType=TINYINT},
+      orderid = #{orderid,jdbcType=INTEGER},
+      orderNo = #{orderno,jdbcType=VARCHAR},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

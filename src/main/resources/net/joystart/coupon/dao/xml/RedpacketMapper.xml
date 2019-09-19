@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.joystart.customer.dao.RedpacketMapper">
+  
+  <select id="selectByParams" parameterType="java.util.HashMap" resultType="net.joystart.coupon.entity.Redpacket">
+    select 
+    	id, 
+    	activityID,
+    	remark, 
+    	startDate, 
+    	endDate, 
+    	isDisable, 
+    	imgUrl, 
+    	isDelete, 
+    	packetNum, 
+    	smokeInUserId, 
+    	smokeInDate, 
+    	usingUserId, 
+    	usingDate, 
+    	createDate, 
+    	modifyDate
+    from t_base_activity_redpackets
+     where 1=1
+        <if test="activityID != null">
+	    	AND activityID = #{activityID}
+	    </if>
+	    <if test="packetNum != null">
+	    	AND packetNum = #{packetNum}
+	    </if>
+	    <if test="usingUserId != null">
+	    	AND usingUserId = #{usingUserId}
+	    </if>
+	    
+  </select>
+  
+  <update id="update" parameterType="net.joystart.coupon.entity.Redpacket" >
+    update t_base_activity_redpackets
+    <set >
+      <if test="usinguserid != null" >
+        usinguserid = #{usinguserid},
+      </if>
+      <if test="usingdate != null" >
+        usingdate = #{usingdate},
+      </if>
+    </set>
+    where packetNum = #{packetnum}
+  </update>
+  
+</mapper>

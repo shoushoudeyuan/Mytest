@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.coupon.dao.CouponMapper" >
+ 
+ <!-- 添加优惠券 -->
+ <insert id="insert" parameterType="net.joystart.coupon.entity.Coupon" >
+    insert into t_base_customer_coupon
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="customerId != null" >
+        customerId,
+      </if>
+      <if test="couponCode != null" >
+        couponCode,
+      </if>
+      <if test="couponMoney != null" >
+        couponMoney,
+      </if>
+      <if test="remark != null" >
+        remark,
+      </if>
+      <if test="fromEnum != null" >
+        fromEnum,
+      </if>
+      <if test="startDate != null" >
+        startDate,
+      </if>
+      <if test="endDate != null" >
+        endDate,
+      </if>
+      <if test="isExpires != null" >
+        isExpires,
+      </if>
+      <if test="couponType != null" >
+        couponType,
+      </if>
+      <if test="useStatus != null" >
+        useStatus,
+      </if>
+      <if test="createDate != null" >
+        createDate,
+      </if>
+      <if test="modifyDate != null" >
+        modifyDate,
+      </if>
+      <if test="isDisable != null" >
+        isDisable,
+      </if>
+      <if test="isTimeControl != null" >
+        isTimeControl,
+      </if>
+       <if test="type != null" >
+        type,
+      </if>
+      <if test="topDiscountMoney != null" >
+        topDiscountMoney,
+      </if>
+      <if test="discount != null" >
+        discount,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="customerId != null" >
+        #{customerId,jdbcType=INTEGER},
+      </if>
+      <if test="couponCode != null" >
+        #{couponCode,jdbcType=VARCHAR},
+      </if>
+      <if test="couponMoney != null" >
+        #{couponMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="remark != null" >
+        #{remark,jdbcType=VARCHAR},
+      </if> 
+      <if test="fromEnum != null" >
+        #{fromEnum,jdbcType=TINYINT},
+      </if>
+      <if test="startDate != null" >
+        #{startDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endDate != null" >
+        #{endDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isExpires != null" >
+        #{isExpires,jdbcType=TINYINT},
+      </if>
+      <if test="couponType != null" >
+        #{couponType,jdbcType=TINYINT},
+      </if>
+      <if test="useStatus != null" >
+        #{useStatus,jdbcType=TINYINT},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifyDate != null" >
+        #{modifyDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isDisable != null" >
+        #{isDisable,jdbcType=TIMESTAMP},
+      </if>
+      <if test="isTimeControl != null" >
+        #{isTimeControl,jdbcType=TINYINT},
+      </if>
+         <if test="type != null" >
+        #{type,jdbcType=INTEGER},
+      </if>
+      <if test="topDiscountMoney != null" >
+        #{topDiscountMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="discount != null" >
+        #{discount,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+   <!-- 根据动态参数查询优惠券 -->
+   <select id="list" resultType="net.joystart.coupon.entity.Coupon" parameterType="java.util.HashMap" >
+         select 
+            id,
+            customerId,
+            couponCode,
+            couponMoney,
+            remark,
+            fromEnum,
+            startDate,
+            endDate,
+            isExpires,
+            couponType,
+            useStatus,
+            isDisable,
+            createDate,
+            modifyDate,
+            type,topDiscountMoney,discount
+        from t_base_customer_coupon
+        where 1=1
+             <if test="id != null" >
+             and  id =  #{id,jdbcType=INTEGER}
+              </if>
+              <if test="customerId != null" >
+             and   customerId =  #{customerId,jdbcType=INTEGER}
+              </if>
+              <if test="couponCode != null" >
+              and  couponCode = #{couponCode,jdbcType=VARCHAR}
+              </if>
+              <if test="couponMoney != null" >
+              and  couponMoney = #{couponMoney,jdbcType=DECIMAL}
+              </if>
+              <if test="remark != null" >
+               and remark = #{remark,jdbcType=VARCHAR}
+              </if>
+              <if test="fromEnum != null" >
+              and fromEnum = #{fromEnum,jdbcType=TINYINT}
+              </if>
+              <if test="startDate != null" >
+              and  startDate = #{startDate,jdbcType=TIMESTAMP}
+              </if>
+              <if test="endDate != null" >
+              and endDate = #{endDate,jdbcType=TIMESTAMP}
+              </if>
+              <if test="isExpires != null" >
+              and isExpires = #{isExpires,jdbcType=TINYINT}
+              </if>
+              <if test="couponType != null" >
+              and couponType = #{couponType,jdbcType=TINYINT}
+              </if>
+              <if test="useStatus != null" >
+               and useStatus = #{useStatus,jdbcType=TINYINT}
+              </if>
+              <if test="createDate != null" >
+              and createDate = #{createDate,jdbcType=TIMESTAMP}
+              </if>
+              <if test="modifyDate != null" >
+              and modifyDate = #{modifyDate,jdbcType=TIMESTAMP}
+              </if>
+              <if test="isDisable != null" >
+               and isDisable = #{isDisable,jdbcType=TIMESTAMP}
+              </if>
+              <if test="isTimeControl != null" >
+              and isTimeControl = #{isTimeControl,jdbcType=TINYINT}
+              </if>
+               <if test="isDelete != null" >
+              and isDelete = #{isDelete,jdbcType=TINYINT}
+              </if>
+              and endDate &gt;= DATE_FORMAT(NOW(),'%Y-%m-%d')
+              ORDER BY endDate,couponMoney;
+    </select>
+    
+     <select id="historyCoupon" resultType="net.joystart.coupon.entity.Coupon" parameterType="java.util.Map" >
+            select
+            id,
+            customerId,
+            couponCode,
+            couponMoney,
+            remark couponName,
+            remark ruleName,
+            remark,
+            fromEnum,
+            startDate,
+            endDate,
+            isExpires,
+            couponType,
+            useStatus,
+            isDisable,
+            createDate,
+            modifyDate,
+            type,
+            topDiscountMoney,
+            discount,
+            if(useStatus = 1, 0, 1) historyType,
+            if (useStatus = 1, usingDate, endDate) orderDate
+            from t_base_customer_coupon where customerId = #{customerId} and (endDate &lt; DATE_FORMAT(NOW(),'%Y-%m-%d')    or isExpires = 1 or useStatus = 1)
+            order by orderDate desc
+            limit #{pageIndex}, #{pageSize};
+     </select>
+  
+    <!-- 根据动态参数查询优惠券 -->
+   <select id="listOld" resultType="net.joystart.coupon.entity.CouponOld" parameterType="java.util.HashMap" >
+         select 
+            id,
+            customerId,
+            couponCode,
+            couponMoney,
+            remark,
+            fromEnum,
+            startDate,
+            endDate,
+            isExpires,
+            couponType,
+            useStatus,
+            isDisable,
+            createDate,
+            modifyDate
+        from t_base_customer_coupon
+        where 1=1
+        and type = 0 
+             <if test="id != null" >
+             and  id =  #{id,jdbcType=INTEGER}
+              </if>
+              <if test="customerId != null" >
+             and   customerId =  #{customerId,jdbcType=INTEGER}
+              </if>
+              <if test="couponCode != null" >
+              and  couponCode = #{couponCode,jdbcType=VARCHAR}
+              </if>
+              <if test="couponMoney != null" >
+              and  couponMoney = #{couponMoney,jdbcType=DECIMAL}
+              </if>
+              <if test="remark != null" >
+               and remark = #{remark,jdbcType=VARCHAR}
+              </if>
+              <if test="fromEnum != null" >
+              and fromEnum = #{fromEnum,jdbcType=TINYINT}
+              </if>
+              <if test="startDate != null" >
+              and  startDate = #{startDate,jdbcType=TIMESTAMP}
+              </if>
+              <if test="endDate != null" >
+              and endDate = #{endDate,jdbcType=TIMESTAMP}
+              </if>
+              <if test="isExpires != null" >
+              and isExpires = #{isExpires,jdbcType=TINYINT}
+              </if>
+              <if test="couponType != null" >
+              and couponType = #{couponType,jdbcType=TINYINT}
+              </if>
+              <if test="useStatus != null" >
+               and useStatus = #{useStatus,jdbcType=TINYINT}
+              </if>
+              <if test="createDate != null" >
+              and createDate = #{createDate,jdbcType=TIMESTAMP}
+              </if>
+              <if test="modifyDate != null" >
+              and modifyDate = #{modifyDate,jdbcType=TIMESTAMP}
+              </if>
+              <if test="isDisable != null" >
+               and isDisable = #{isDisable,jdbcType=TIMESTAMP}
+              </if>
+              <if test="isTimeControl != null" >
+              and isTimeControl = #{isTimeControl,jdbcType=TINYINT}
+              </if>
+               <if test="isDelete != null" >
+              and isDelete = #{isDelete,jdbcType=TINYINT}
+              </if>
+              ORDER BY endDate,couponMoney;
+  </select>
+  
+    <update id="update" parameterType="net.joystart.coupon.entity.Coupon" >
+    update t_base_customer_coupon
+    <set >
+      <if test="customerId != null" >
+        customerId = #{customerId,jdbcType=INTEGER},
+      </if>
+      <if test="usingDate != null" >
+        usingDate = #{usingDate,jdbcType=TINYINT},
+      </if>
+      <if test="useStatus != null" >
+        useStatus = #{useStatus,jdbcType=TINYINT}
+      </if>
+      
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+   <!-- 根据Code查询优惠卷数量 -->
+   <select id="getCountByCode" resultType="java.lang.Integer" parameterType="java.lang.String" >
+    SELECT  COUNT(*) FROM `t_base_customer_coupon`
+    WHERE `couponcode` =  #{couponCode,jdbcType=VARCHAR}
+   </select>
+   <!-- 根据订单ID获取优惠券相关信息 -->
+    <select id="getCouponByOrderId" resultType="net.joystart.coupon.entity.Coupon" parameterType="java.lang.Integer" >
+         select 
+            cc.id,
+            cc.customerId,
+            cc.couponCode,
+            cc.couponMoney,
+            cc.remark,
+            cc.fromEnum,
+            cc.startDate,
+            cc.endDate,
+            cc.isExpires,
+            cc.couponType,
+            cc.useStatus,
+            cc.isDisable,
+            cc.createDate,
+            cc.modifyDate,
+            cc.type,
+            cc.discount,
+            cc.topDiscountMoney
+        from t_base_customer_coupon cc 
+        inner join t_order_coupon oc on cc.id=oc.couponId
+        and oc.orderId=#{orderId,jdbcType=INTEGER}
+  </select>   
+</mapper>

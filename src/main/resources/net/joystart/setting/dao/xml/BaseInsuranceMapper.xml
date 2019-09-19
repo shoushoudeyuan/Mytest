@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.setting.dao.BaseInsuranceMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.setting.entity.BaseInsurance" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="serviceCityId" property="servicecityid" jdbcType="INTEGER" />
+    <result column="vehicleModelId" property="vehiclemodelid" jdbcType="INTEGER" />
+    <result column="insuranceType" property="insurancetype" jdbcType="TINYINT" />
+    <result column="insuranceName" property="insurancename" jdbcType="VARCHAR" />
+    <result column="insuranceMoney" property="insurancemoney" jdbcType="DECIMAL" />
+    <result column="createUser" property="createuser" jdbcType="INTEGER" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+    <result column="chargingMode" property="chargingMode" jdbcType="INTEGER" />
+    <result column="userChoose" property="userChoose" jdbcType="INTEGER" />
+    <result column="insuranceServer" property="insuranceServer" jdbcType="VARCHAR" />
+    <result column="isShowInApp" property="isShowInApp" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, serviceCityId, vehicleModelId, insuranceType, insuranceName, insuranceMoney, 
+    createUser, createDate, modifyDate,chargingMode,userChoose,insuranceServer,isShowInApp
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_insurance
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_base_insurance
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.joystart.setting.entity.BaseInsurance" >
+    insert into t_base_insurance (id, serviceCityId, vehicleModelId, 
+      insuranceType, insuranceName, insuranceMoney, 
+      createUser, createDate, modifyDate,chargingMode,userChoose
+      )
+    values (#{id,jdbcType=INTEGER}, #{servicecityid,jdbcType=INTEGER}, #{vehiclemodelid,jdbcType=INTEGER}, 
+      #{insurancetype,jdbcType=TINYINT}, #{insurancename,jdbcType=VARCHAR}, #{insurancemoney,jdbcType=DECIMAL}, 
+      #{createuser,jdbcType=INTEGER}, #{createdate,jdbcType=TIMESTAMP}, #{modifydate,jdbcType=TIMESTAMP},
+      #{chargingMode,jdbcType=INTEGER}, #{userChoose,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="net.joystart.setting.entity.BaseInsurance" >
+    insert into t_base_insurance
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="servicecityid != null" >
+        serviceCityId,
+      </if>
+      <if test="vehiclemodelid != null" >
+        vehicleModelId,
+      </if>
+      <if test="insurancetype != null" >
+        insuranceType,
+      </if>
+      <if test="insurancename != null" >
+        insuranceName,
+      </if>
+      <if test="insurancemoney != null" >
+        insuranceMoney,
+      </if>
+      <if test="createuser != null" >
+        createUser,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+      <if test="chargingMode != null" >
+        chargingMode,
+      </if>
+      <if test="userChoose != null" >
+        userChoose,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="servicecityid != null" >
+        #{servicecityid,jdbcType=INTEGER},
+      </if>
+      <if test="vehiclemodelid != null" >
+        #{vehiclemodelid,jdbcType=INTEGER},
+      </if>
+      <if test="insurancetype != null" >
+        #{insurancetype,jdbcType=TINYINT},
+      </if>
+      <if test="insurancename != null" >
+        #{insurancename,jdbcType=VARCHAR},
+      </if>
+      <if test="insurancemoney != null" >
+        #{insurancemoney,jdbcType=DECIMAL},
+      </if>
+      <if test="createuser != null" >
+        #{createuser,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="chargingMode != null" >
+        #{chargingMode,jdbcType=INTEGER},
+      </if>
+      <if test="userChoose != null" >
+        #{userChoose,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.joystart.setting.entity.BaseInsurance" >
+    update t_base_insurance
+    <set >
+      <if test="servicecityid != null" >
+        serviceCityId = #{servicecityid,jdbcType=INTEGER},
+      </if>
+      <if test="vehiclemodelid != null" >
+        vehicleModelId = #{vehiclemodelid,jdbcType=INTEGER},
+      </if>
+      <if test="insurancetype != null" >
+        insuranceType = #{insurancetype,jdbcType=TINYINT},
+      </if>
+      <if test="insurancename != null" >
+        insuranceName = #{insurancename,jdbcType=VARCHAR},
+      </if>
+      <if test="insurancemoney != null" >
+        insuranceMoney = #{insurancemoney,jdbcType=DECIMAL},
+      </if>
+      <if test="createuser != null" >
+        createUser = #{createuser,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="chargingMode != null" >
+        chargingMode = #{chargingMode,jdbcType=INTEGER},
+      </if>
+      <if test="userChoose != null" >
+        userChoose = #{userChoose,jdbcType=INTEGER},
+      </if>
+      <if test="insuranceServer != null" >
+        insuranceServer = #{insuranceServer,jdbcType=VARCHAR},
+      </if>
+      <if test="isShowInApp != null" >
+        isShowInApp = #{isShowInApp,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.joystart.setting.entity.BaseInsurance" >
+    update t_base_insurance
+    set serviceCityId = #{servicecityid,jdbcType=INTEGER},
+      vehicleModelId = #{vehiclemodelid,jdbcType=INTEGER},
+      insuranceType = #{insurancetype,jdbcType=TINYINT},
+      insuranceName = #{insurancename,jdbcType=VARCHAR},
+      insuranceMoney = #{insurancemoney,jdbcType=DECIMAL},
+      createUser = #{createuser,jdbcType=INTEGER},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      chargingMode = #{chargingMode,jdbcType=INTEGER},
+      userChoose = #{userChoose,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- 获取保险和服务列表  -->
+    <select id="getBaseInsuranceList" resultType="net.joystart.setting.entity.BaseInsurance" parameterType="java.util.HashMap" >
+        SELECT 
+            i.`id`,
+            i.`insurancetype`,
+            i.`insurancename`,
+            i.`insurancemoney`,
+            i.servicecityid ,
+            i.chargingMode,
+            i.userChoose,
+            i.isShowInApp,
+            i.`insuranceServer`,
+            sc.`showName` as servicecityname,#服务城市
+            i.vehiclemodelid,
+            vm.`modelName` as vehiclemodelname,#车型名称
+            vm.serialID as vehicleserialid,
+            vs.serialName as vehicleserialname#车系名称         
+        FROM `t_base_insurance` i
+        INNER JOIN `t_base_vehicle_model` vm
+        ON i.`vehicleModelId` = vm.`id`
+        INNER JOIN `t_base_service_city` sc
+        ON i.`serviceCityId` = sc.`id`
+        left join t_base_vehicle_series vs on vm.serialID=vs.id
+        where 1=1
+        <if test="insurancename != null" >
+            and i.insuranceName like #{insurancename,jdbcType=VARCHAR}
+        </if>
+        <if test="servicecityid != null" >
+            and i.servicecityid = #{servicecityid,jdbcType=INTEGER}
+        </if>
+        <if test="vehicleserialid != null" >
+            and vm.serialID = #{vehicleserialid,jdbcType=INTEGER}
+        </if>
+        <if test="vehiclemodelid != null" >
+            and i.vehiclemodelid = #{vehiclemodelid,jdbcType=INTEGER}
+        </if>
+        LIMIT #{startIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER};
+     </select>
+  
+   <!-- 获取保险和服务列表数量  -->
+    <select id="getBaseInsuranceListCount" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+       SELECT 
+            count(*) `count`
+        FROM `t_base_insurance` i
+        INNER JOIN `t_base_vehicle_model` vm
+        ON i.`vehicleModelId` = vm.`id`
+        INNER JOIN `t_base_service_city` sc
+        ON i.`serviceCityId` = sc.`id`
+        left join t_base_vehicle_series vs on vm.serialID=vs.id
+        where 1=1
+        <if test="insurancename != null" >
+            and i.insuranceName like #{insurancename,jdbcType=VARCHAR}
+        </if>
+        <if test="servicecityid != null" >
+            and i.servicecityid = #{servicecityid,jdbcType=INTEGER}
+        </if>
+        <if test="vehicleserialid != null" >
+            and vm.serialID = #{vehicleserialid,jdbcType=INTEGER}
+        </if>
+        <if test="vehiclemodelid != null" >
+            and i.vehiclemodelid = #{vehiclemodelid,jdbcType=INTEGER}
+        </if>
+     </select>
+     
+     <select id="getRequiredInsuranceModel" resultType="java.lang.Integer">
+       SELECT DISTINCT(i.vehicleModelId) FROM `t_base_insurance` i WHERE i.userChoose=1
+     </select>
+     
+     <!-- 获取保险和服务列表  -->
+    <select id="getInsuranceList" resultType="net.joystart.setting.entity.BaseInsurance" parameterType="java.util.HashMap" >
+        SELECT 
+            i.`id`,
+            vm.`modelName` as vehiclemodelname,#车型名称
+            i.`insurancename`,
+            i.`insurancemoney`,
+            i.chargingMode,
+            i.userChoose
+        FROM `t_base_insurance` i
+        INNER JOIN `t_base_vehicle_model` vm ON i.`vehicleModelId` = vm.`id`
+        INNER JOIN `t_base_service_city` sc ON i.`serviceCityId` = sc.`id`
+        where 1=1
+        <if test="cityName != null">
+            and sc.`showName` = #{cityName,jdbcType=VARCHAR}
+        </if>
+        <if test="vehiclemodelid != null" >
+            and i.vehiclemodelid = #{vehiclemodelid,jdbcType=INTEGER}
+        </if>
+     </select>
+</mapper>

@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.couponmanage.dao.CouponUseConfigMapper" >
+
+  <select id="selectById" parameterType="java.lang.Integer" resultType="net.joystart.couponmanage.entity.CouponUseConfig">
+    select * from t_base_coupon_use_config where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectCouponUseConfig" parameterType="Map" resultType="net.joystart.couponmanage.entity.CouponUseConfig">
+  	select * from t_base_coupon_use_config where isDelete = 0
+    <if test="isValidate != null">
+    	and isValidate = #{isValidate,jdbcType=INTEGER}
+    </if>
+    <if test="configName != null">
+    	and configName like CONCAT('%',#{configName},'%')
+    </if>
+    <if test="couponType">
+   		and couponType = #{couponType,jdbcType=INTEGER}
+    </if>
+    order by createTime desc
+    <if test="pageSize != null">
+    	LIMIT #{pageIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER};
+    </if>
+  </select>
+  
+  <select id="selectCouponUseConfigCount" parameterType="Map" resultType="Integer">
+  	select count(*) from t_base_coupon_use_config where isDelete = 0
+    <if test="isValidate != null">
+    	and isValidate = #{isValidate,jdbcType=INTEGER}
+    </if>
+    <if test="configName != null">
+    	and configName like CONCAT('%',#{configName},'%')
+    </if>
+    <if test="couponType">
+   		and couponType = #{couponType,jdbcType=INTEGER}
+    </if>
+  </select>
+  
+  <select id="selectCouponNameList" resultType="String">
+  	select configName from t_base_coupon_use_config where isDelete=0
+  </select>
+  
+ <insert id="insertSelective" parameterType="net.joystart.couponmanage.entity.CouponUseConfig" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into t_base_coupon_use_config
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="configName != null" >
+        configName,
+      </if>
+      <if test="couponType != null" >
+        couponType,
+      </if>
+      <if test="discountPercent != null" >
+        discountPercent,
+      </if>
+      <if test="maxDeductionMoney != null" >
+        maxDeductionMoney,
+      </if>
+      <if test="couponMoney != null" >
+        couponMoney,
+      </if>
+      <if test="validateDay != null" >
+        validateDay,
+      </if>
+      <if test="useCityId != null" >
+        useCityId,
+      </if>
+      <if test="useWeekDay != null" >
+        useWeekDay,
+      </if>
+      <if test="useUpperTime != null" >
+        useUpperTime,
+      </if>
+      <if test="useLowerTime != null" >
+        useLowerTime,
+      </if>
+      <if test="baseOrderMoney != null" >
+        baseOrderMoney,
+      </if>
+      <if test="useVehicleModeId != null" >
+        useVehicleModeId,
+      </if>
+      <if test="appDiscription != null" >
+        appDiscription,
+      </if>
+      <if test="isValidate != null" >
+        isValidate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="configName != null" >
+        #{configName,jdbcType=VARCHAR},
+      </if>
+      <if test="couponType != null" >
+        #{couponType,jdbcType=INTEGER},
+      </if>
+      <if test="discountPercent != null" >
+        #{discountPercent,jdbcType=INTEGER},
+      </if>
+      <if test="maxDeductionMoney != null" >
+        #{maxDeductionMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="couponMoney != null" >
+        #{couponMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="validateDay != null" >
+        #{validateDay,jdbcType=INTEGER},
+      </if>
+      <if test="useCityId != null" >
+        #{useCityId,jdbcType=VARCHAR},
+      </if>
+      <if test="useWeekDay != null" >
+        #{useWeekDay,jdbcType=VARCHAR},
+      </if>
+      <if test="useUpperTime != null" >
+        #{useUpperTime,jdbcType=VARCHAR},
+      </if>
+      <if test="useLowerTime != null" >
+        #{useLowerTime,jdbcType=VARCHAR},
+      </if>
+      <if test="baseOrderMoney != null" >
+        #{baseOrderMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="useVehicleModeId != null" >
+        #{useVehicleModeId,jdbcType=VARCHAR},
+      </if>
+      <if test="appDiscription != null" >
+        #{appDiscription,jdbcType=VARCHAR},
+      </if>
+      <if test="isValidate != null" >
+        #{isValidate,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  
+ <update id="updateByIdSelective" parameterType="net.joystart.couponmanage.entity.CouponUseConfig" >
+    update t_base_coupon_use_config
+    <set >
+      <if test="configName != null" >
+        configName = #{configName,jdbcType=VARCHAR},
+      </if>
+      <if test="couponType != null" >
+        couponType = #{couponType,jdbcType=INTEGER},
+      </if>
+      <if test="discountPercent != null" >
+        discountPercent = #{discountPercent,jdbcType=INTEGER},
+      </if>
+      <if test="maxDeductionMoney != null" >
+        maxDeductionMoney = #{maxDeductionMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="couponMoney != null" >
+        couponMoney = #{couponMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="validateDay != null" >
+        validateDay = #{validateDay,jdbcType=INTEGER},
+      </if>
+      <if test="useCityId != null" >
+        useCityId = #{useCityId,jdbcType=VARCHAR},
+      </if>
+      <if test="useWeekDay != null" >
+        useWeekDay = #{useWeekDay,jdbcType=VARCHAR},
+      </if>
+      <if test="useUpperTime != null" >
+        useUpperTime = #{useUpperTime,jdbcType=VARCHAR},
+      </if>
+      <if test="useLowerTime != null" >
+        useLowerTime = #{useLowerTime,jdbcType=VARCHAR},
+      </if>
+      <if test="baseOrderMoney != null" >
+        baseOrderMoney = #{baseOrderMoney,jdbcType=DECIMAL},
+      </if>
+      <if test="useVehicleModeId != null" >
+        useVehicleModeId = #{useVehicleModeId,jdbcType=VARCHAR},
+      </if>
+      <if test="appDiscription != null" >
+        appDiscription = #{appDiscription,jdbcType=VARCHAR},
+      </if>
+      <if test="isValidate != null" >
+        isValidate = #{isValidate,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateCouponState" parameterType="net.joystart.couponmanage.entity.CouponUseConfig">
+  	update t_base_coupon_use_config set isValidate = #{isValidate,jdbcType=INTEGER} where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="deleteCouponUseConfig" parameterType="Map">
+  	update t_base_coupon_use_config set isDelete = 1 
+  	where id in 
+  	<foreach item="cid" collection="ids" index="index" open="(" separator="," close=")">
+  		#{cid}
+  	</foreach>
+  </update>
+  
+</mapper>

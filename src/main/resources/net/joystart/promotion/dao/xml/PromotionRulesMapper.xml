@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.promotion.dao.PromotionRulesMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.promotion.entity.PromotionRules" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="businessId" property="businessId" jdbcType="INTEGER" />
+    <result column="startDays" property="startdays" jdbcType="INTEGER" />
+    <result column="endDays" property="enddays" jdbcType="INTEGER" />
+    <result column="pushPercent" property="pushpercent" jdbcType="DECIMAL" />
+    <result column="userId" property="userid" jdbcType="INTEGER" />
+    <result column="userName" property="userName" jdbcType="VARCHAR" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, businessId,startDays, endDays, pushPercent, userId, createDate, modifyDate
+  </sql>
+  <select id="list" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select 
+    <include refid="Base_Column_List" />
+    ,(select realname from t_sys_user where id = userid)
+		userName
+    from t_promotion_rules
+    where 1 = 1
+    and businessId = #{businessId}
+  </select>
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select 
+    count(id)
+    from t_promotion_rules
+    where 1 = 1
+    and businessId = #{businessId}
+  </select>
+  <delete id="deleteRules" parameterType="java.util.List" >
+    delete from t_promotion_rules
+    where id in 
+		<foreach collection="list" item = "value" open="(" separator="," close=")">
+		#{value}  
+		</foreach> 
+  </delete>
+  
+  <insert id="insertRules" parameterType="net.joystart.promotion.entity.PromotionRules" >
+    insert into t_promotion_rules
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="businessId != null" >
+        businessId,
+      </if>
+      <if test="startdays != null" >
+        startDays,
+      </if>
+      <if test="enddays != null" >
+        endDays,
+      </if>
+      <if test="pushpercent != null" >
+        pushPercent,
+      </if>
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="businessId != null" >
+        #{businessId,jdbcType=INTEGER},
+      </if>
+      <if test="startdays != null" >
+        #{startdays,jdbcType=INTEGER},
+      </if>
+      <if test="enddays != null" >
+        #{enddays,jdbcType=INTEGER},
+      </if>
+      <if test="pushpercent != null" >
+        #{pushpercent,jdbcType=DECIMAL},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateRules" parameterType="net.joystart.promotion.entity.PromotionRules" >
+    update t_promotion_rules
+    <set >
+    	<if test="businessId != null" >
+        businessId = #{businessId,jdbcType=INTEGER},
+      </if>
+      <if test="startdays != null" >
+        startDays = #{startdays,jdbcType=INTEGER},
+      </if>
+      <if test="enddays != null" >
+        endDays = #{enddays,jdbcType=INTEGER},
+      </if>
+      <if test="pushpercent != null" >
+        pushPercent = #{pushpercent,jdbcType=DECIMAL},
+      </if>
+      <if test="userid != null" >
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectRulesByParam" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_promotion_rules
+    where businessId = #{businessId}
+    and datediff(now(), #{customerCreateDate}) &gt;= startDays
+    and datediff(now(), #{customerCreateDate}) &lt;= (case when endDays = 0 then 100000 else endDays end)
+    limit 0,1
+  </select>
+  
+</mapper>

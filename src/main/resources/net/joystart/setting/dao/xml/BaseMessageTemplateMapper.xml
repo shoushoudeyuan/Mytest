@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.setting.dao.BaseMessageTemplateMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.setting.entity.BaseMessageTemplate" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="identification" property="identification" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="limit" property="limit" jdbcType="TINYINT" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+    <result column="messageType" property="messageType" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, identification, title, content, status, limit, createDate, modifyDate,messageType
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_message_template
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_base_message_template
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.joystart.setting.entity.BaseMessageTemplate" >
+    insert into t_base_message_template (id, identification, title, 
+      content, status, limit, 
+      createDate, modifyDate)
+    values (#{id,jdbcType=INTEGER}, #{identification,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
+      #{content,jdbcType=VARCHAR}, #{status,jdbcType=TINYINT}, #{limit,jdbcType=TINYINT}, 
+      #{createdate,jdbcType=TIMESTAMP}, #{modifydate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="net.joystart.setting.entity.BaseMessageTemplate" >
+    insert into t_base_message_template
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="identification != null" >
+        identification,
+      </if>
+      <if test="title != null" >
+        title,
+      </if>
+      <if test="content != null" >
+        content,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="limit != null" >
+        `limit`,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="identification != null" >
+        #{identification,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="limit != null" >
+        #{limit,jdbcType=TINYINT},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.joystart.setting.entity.BaseMessageTemplate" >
+    update t_base_message_template
+    <set >
+      <if test="identification != null" >
+        identification = #{identification,jdbcType=VARCHAR},
+      </if>
+      <if test="title != null" >
+        title = #{title,jdbcType=VARCHAR},
+      </if>
+      <if test="content != null" >
+        content = #{content,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="limit != null" >
+        `limit` = #{limit,jdbcType=TINYINT},
+      </if>
+      <if test="messageType != null" >
+        `messageType` = #{messageType,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.joystart.setting.entity.BaseMessageTemplate" >
+    update t_base_message_template
+    set identification = #{identification,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      content = #{content,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      limit = #{limit,jdbcType=TINYINT},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <!-- 获取短信模板列表 -->
+  <select id="getMessageTemplateList" resultType="net.joystart.setting.entity.BaseMessageTemplate" parameterType="java.util.HashMap" >
+    SELECT 
+		t.`id`,
+		t.`limit`,
+		t.`status`,
+		t.`identification`,
+		t.`title`,
+		t.`content`,
+		t.messageType
+	FROM `t_base_message_template` t
+	where 1=1
+	<if test="identification != null" >
+       and identification like #{identification,jdbcType=VARCHAR}
+    </if>
+    <if test="content != null" >
+     	and  content like #{content,jdbcType=VARCHAR}
+    </if>
+    LIMIT #{startIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER};
+  </select>
+   <!-- 获取短信模板列表数量 -->
+  <select id="getMessageTemplateListCount" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    SELECT 
+		count(*) `count`
+	FROM `t_base_message_template` t
+	where 1=1
+	<if test="identification != null" >
+       and identification like #{identification,jdbcType=VARCHAR}
+    </if>
+    <if test="content != null" >
+     	and  content like #{content,jdbcType=VARCHAR}
+    </if>
+  </select>
+  
+  <!-- 获取短信模板列表数量 -->
+  <select id="getMessageTemplateCountByIdentification" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    SELECT 
+		count(*) `count`
+	FROM `t_base_message_template` t
+	where 1=1
+	<if test="identification != null" >
+       and identification = #{identification,jdbcType=VARCHAR}
+    </if>
+    <if test="id != null" >
+     	and  id != #{id,jdbcType=INTEGER}
+    </if>
+  </select>
+  
+  <!-- 根据标识获取短信内容 -->
+  <select id="selectTitleAndContentByIdentification" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    SELECT 
+    	title,
+    	content,messageType
+    FROM t_base_message_template
+    WHERE `identification`=#{identification,jdbcType=VARCHAR} AND status=1
+  </select>
+</mapper>

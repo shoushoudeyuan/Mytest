@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.promotion.dao.PromotionBusinessMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.promotion.entity.PromotionBusiness" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="orderMoney" property="ordermoney" jdbcType="DECIMAL" />
+    <result column="pushMoney" property="pushmoney" jdbcType="DECIMAL" />
+    <result column="userName" property="username" jdbcType="VARCHAR" />
+    <result column="userId" property="userId" jdbcType="INTEGER" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="isDelete" property="isDelete" jdbcType="TINYINT" />
+    <result column="isDisable" property="isdisable" jdbcType="TINYINT" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR" />
+    <result column="mail" property="mail" jdbcType="VARCHAR" />
+    <result column="startDate" property="startdate" jdbcType="TIMESTAMP" />
+    <result column="endDate" property="enddate" jdbcType="TIMESTAMP" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+    <result column="couponPackageId" property="couponPackageId" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,userId, userName, isDisable, isDelete, name, mobile, address, mail, 
+    startDate, endDate, createDate, modifyDate,couponPackageId
+  </sql>
+  <select id="list" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select 
+    b.id,b.userId, s.userName, b.isDisable, b.isDelete, b.name, s.mobile, b.address,s.email mail, 
+    b.startDate, b.endDate, b.createDate, b.modifyDate,b.couponPackageId,
+    (SELECT 
+            SUM(p.pushMoney)
+        FROM
+            t_order o ,t_promotion_performance p 
+        WHERE o.id = p.orderid and p.businessId = b.id) pushMoney,
+    (SELECT 
+            SUM(case when o.actualPaymentCost >= 0 then o.actualPaymentCost else o.orderDiscountCost end)
+        FROM
+            t_order o,t_promotion_performance p
+        WHERE o.id = p.orderId and p.businessId = b.id) orderMoney
+    from t_promotion_business b,t_sys_user s where b.isDelete = '0' and b.userId = s.id
+    <if test="username != null" >
+         and s.username like #{username}
+		</if>
+		<if test="name != null" >
+         and b.name like #{name}
+		</if>
+		<if test="mobile != null" >
+         and s.mobile like #{mobile}
+		</if>
+		<if test="address != null" >
+         and b.address like #{address}
+		</if>
+		<if test="mail != null" >
+         and s.email like #{mail}
+		</if>
+		order by id DESC
+         limit #{rowStart},#{pageSize}
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select 
+    count(b.id)
+    from t_promotion_business b,t_sys_user s where b.isDelete = '0' and b.userId = s.id
+    <if test="username != null" >
+         and s.username like #{username}
+		</if>
+		<if test="name != null" >
+         and b.name like #{name}
+		</if>
+		<if test="mobile != null" >
+         and s.mobile like #{mobile}
+		</if>
+		<if test="address != null" >
+         and b.address like #{address}
+		</if>
+		<if test="mail != null" >
+         and s.email like #{mail}
+		</if>
+  </select>
+  
+  <select id="selectBusinessByUserName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_promotion_business
+    where userName = #{userName}
+  </select>
+  
+  <update id="deleteBusiness" parameterType="java.util.List" >
+    update t_promotion_business set isDelete=1 where id in
+		<foreach collection="list" item = "value" open="(" separator="," close=")">
+		#{value}  
+		</foreach> 
+  
+  </update>
+  
+  <update id="deleteBusinessByUserId" parameterType="java.util.List" >
+    update t_promotion_business set isDelete=1 where userid in
+		<foreach collection="list" item = "value" open="(" separator="," close=")">
+		#{value}  
+		</foreach> 
+  
+  </update>
+ 
+  <insert id="insertBusiness" parameterType="net.joystart.promotion.entity.PromotionBusiness" useGeneratedKeys="true" keyProperty="id">
+    insert into t_promotion_business
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="userId != null" >
+        userId,
+      </if>
+      <if test="username != null" >
+        userName,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="isdisable != null" >
+        isDisable,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="address != null" >
+        address,
+      </if>
+      <if test="mail != null" >
+        mail,
+      </if>
+      <if test="startdate != null" >
+        startDate,
+      </if>
+      <if test="enddate != null" >
+        endDate,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="isdisable != null" >
+        #{isdisable,jdbcType=TINYINT},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="mail != null" >
+        #{mail,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateBusiness" parameterType="net.joystart.promotion.entity.PromotionBusiness" >
+    update t_promotion_business
+    <set >
+      <if test="username != null" >
+        userName = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="isdisable != null" >
+        isDisable = #{isdisable,jdbcType=TINYINT},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="address != null" >
+        address = #{address,jdbcType=VARCHAR},
+      </if>
+      <if test="mail != null" >
+        mail = #{mail,jdbcType=VARCHAR},
+      </if>
+      <if test="startdate != null" >
+        startDate = #{startdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="enddate != null" >
+        endDate = #{enddate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateCouponPackageId" parameterType="java.util.HashMap">
+  	update t_promotion_business set couponPackageId = #{couponPackageId,jdbcType=INTEGER} where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="login" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_promotion_business where 1 = 1
+        <if test="userName != null" >
+         and username = #{userName}
+		</if>
+		<if test="password != null" >
+         and password = #{password}
+		</if>
+  </select>
+  
+  <select id="selectBusinessByPersonId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_promotion_business
+    where id = (select businessId from t_promotion_person where id = #{personId})
+  </select>
+</mapper>

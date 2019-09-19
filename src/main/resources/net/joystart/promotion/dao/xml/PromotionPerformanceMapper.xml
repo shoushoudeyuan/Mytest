@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.promotion.dao.PromotionPerformanceMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.promotion.entity.PromotionPerformance" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="personId" property="personid" jdbcType="INTEGER" />
+    <result column="businessId" property="businessid" jdbcType="INTEGER" />
+    <result column="orderId" property="orderid" jdbcType="INTEGER" />
+    <result column="startDays" property="startdays" jdbcType="INTEGER" />
+    <result column="endDays" property="enddays" jdbcType="INTEGER" />
+    <result column="pushMoney" property="pushmoney" jdbcType="DECIMAL" />
+    <result column="pushPercent" property="pushpercent" jdbcType="INTEGER" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, personId, businessId, orderId, startDays, endDays, pushMoney, pushPercent, createDate, 
+    modifyDate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_promotion_performance
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_promotion_performance
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.joystart.promotion.entity.PromotionPerformance" >
+    insert into t_promotion_performance (id, personId, businessId, 
+      orderId, startDays, endDays, 
+      pushMoney, pushPercent, createDate, 
+      modifyDate)
+    values (#{id,jdbcType=INTEGER}, #{personid,jdbcType=INTEGER}, #{businessid,jdbcType=INTEGER}, 
+      #{orderid,jdbcType=INTEGER}, #{startdays,jdbcType=INTEGER}, #{enddays,jdbcType=INTEGER}, 
+      #{pushmoney,jdbcType=DECIMAL}, #{pushpercent,jdbcType=INTEGER}, #{createdate,jdbcType=TIMESTAMP}, 
+      #{modifydate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="net.joystart.promotion.entity.PromotionPerformance" >
+    insert into t_promotion_performance
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="personid != null" >
+        personId,
+      </if>
+      <if test="businessid != null" >
+        businessId,
+      </if>
+      <if test="orderid != null" >
+        orderId,
+      </if>
+      <if test="startdays != null" >
+        startDays,
+      </if>
+      <if test="enddays != null" >
+        endDays,
+      </if>
+      <if test="pushmoney != null" >
+        pushMoney,
+      </if>
+      <if test="pushpercent != null" >
+        pushPercent,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="personid != null" >
+        #{personid,jdbcType=INTEGER},
+      </if>
+      <if test="businessid != null" >
+        #{businessid,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        #{orderid,jdbcType=INTEGER},
+      </if>
+      <if test="startdays != null" >
+        #{startdays,jdbcType=INTEGER},
+      </if>
+      <if test="enddays != null" >
+        #{enddays,jdbcType=INTEGER},
+      </if>
+      <if test="pushmoney != null" >
+        #{pushmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="pushpercent != null" >
+        #{pushpercent,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.joystart.promotion.entity.PromotionPerformance" >
+    update t_promotion_performance
+    <set >
+      <if test="personid != null" >
+        personId = #{personid,jdbcType=INTEGER},
+      </if>
+      <if test="businessid != null" >
+        businessId = #{businessid,jdbcType=INTEGER},
+      </if>
+      <if test="orderid != null" >
+        orderId = #{orderid,jdbcType=INTEGER},
+      </if>
+      <if test="startdays != null" >
+        startDays = #{startdays,jdbcType=INTEGER},
+      </if>
+      <if test="enddays != null" >
+        endDays = #{enddays,jdbcType=INTEGER},
+      </if>
+      <if test="pushmoney != null" >
+        pushMoney = #{pushmoney,jdbcType=DECIMAL},
+      </if>
+      <if test="pushpercent != null" >
+        pushPercent = #{pushpercent,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.joystart.promotion.entity.PromotionPerformance" >
+    update t_promotion_performance
+    set personId = #{personid,jdbcType=INTEGER},
+      businessId = #{businessid,jdbcType=INTEGER},
+      orderId = #{orderid,jdbcType=INTEGER},
+      startDays = #{startdays,jdbcType=INTEGER},
+      endDays = #{enddays,jdbcType=INTEGER},
+      pushMoney = #{pushmoney,jdbcType=DECIMAL},
+      pushPercent = #{pushpercent,jdbcType=INTEGER},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

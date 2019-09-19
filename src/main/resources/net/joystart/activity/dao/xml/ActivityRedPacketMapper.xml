@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.activity.dao.ActivityRedPacketMapper">
+	<resultMap id="BaseResultMap"
+		type="net.joystart.activity.entity.ActivityRedPacket">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="activityID" property="activityid" jdbcType="INTEGER" />
+		<result column="remark" property="remark" jdbcType="VARCHAR" />
+		<result column="startDate" property="startdate" jdbcType="TIMESTAMP" />
+		<result column="endDate" property="enddate" jdbcType="TIMESTAMP" />
+		<result column="isDisable" property="isdisable" jdbcType="TINYINT" />
+		<result column="imgUrl" property="imgurl" jdbcType="VARCHAR" />
+		<result column="isDelete" property="isdelete" jdbcType="TINYINT" />
+		<result column="packetNum" property="packetnum" jdbcType="VARCHAR" />
+		<result column="smokeInUserId" property="smokeinuserid"
+			jdbcType="INTEGER" />
+		<result column="smokeInDate" property="smokeindate" jdbcType="TIMESTAMP" />
+		<result column="usingUserId" property="usinguserid" jdbcType="INTEGER" />
+		<result column="usingDate" property="usingdate" jdbcType="TIMESTAMP" />
+		<result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+		<result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+		<result column="usingusername" property="usingusername"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, activityID, remark, startDate, endDate, isDisable,
+		imgUrl, isDelete,
+		packetNum,
+		smokeInUserId, smokeInDate, usingUserId,
+		usingDate, createDate, modifyDate
+	</sql>
+	<sql id="Base_Column_List_New">
+		r.id, activityID, r.remark, startDate, endDate, r.isDisable,
+		imgUrl, r.isDelete,
+		packetNum,
+		smokeInUserId, smokeInDate, usingUserId,
+		usingDate, c.`name` as usingusername , r.`createdate`
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_base_activity_redpackets
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<!-- 分页获取活动红包列表 -->
+	<select id="getActivityRedPackets" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List_New" />
+		from
+		t_base_activity_redpackets r left join t_base_customer c on
+		r.usingUserId = c.id
+		where r.isDelete=0
+		and
+		activityId=#{activityId,jdbcType=INTEGER}
+		<if test="packetNum != null">
+			and r.packetNum = #{packetNum,jdbcType=VARCHAR}
+		</if>
+		<if test="isUsed != null and isUsed==1">
+			and r.usingUserId is not null
+		</if>
+		<if test="isUsed == 0">
+			and r.usingUserId is null
+		</if>
+		<if test="isEnable != null">
+			and r.isDisable = #{isEnable,jdbcType=INTEGER}
+		</if>
+		order by id DESC
+		<if test="rowStart !=null ">
+			limit
+			#{rowStart,jdbcType=INTEGER},#{pageSize,jdbcType=INTEGER}
+		</if>
+
+	</select>
+	<!-- 获取活动红包数量 -->
+	<select id="getActivityRedPacketCount" resultType="java.lang.Integer"
+		parameterType="java.lang.Integer">
+		select
+		count(1)
+		from
+		t_base_activity_redpackets
+		where isDelete=0
+		and activityId=#{activityId,jdbcType=INTEGER}
+		<if test="packetNum != null">
+			and packetNum = #{packetNum,jdbcType=VARCHAR}
+		</if>
+		<if test="isUsed != null and isUsed==1">
+			and usingUserId is not null
+		</if>
+		<if test="isUsed == 0">
+			and usingUserId is null
+		</if>
+		<if test="isEnable != null">
+			and isDisable = #{isEnable,jdbcType=INTEGER}
+		</if>
+	</select>
+	<!-- 是否存在红包编码 -->
+	<select id="isExistRedPacketNumber" resultType="java.lang.Integer"
+		parameterType="java.lang.String">
+		select 1
+		from t_base_activity_redpackets
+		where
+		packetNum=#{packetNum,jdbcType=INTEGER}
+		limit 1
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from
+		t_base_activity_redpackets
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="net.joystart.activity.entity.ActivityRedPacket">
+		insert into
+		t_base_activity_redpackets (id, activityID, remark,
+		startDate, endDate,
+		isDisable,
+		imgUrl, isDelete, packetNum,
+		smokeInUserId, smokeInDate,
+		usingUserId,
+		usingDate, createDate, modifyDate
+		)
+		values
+		(#{id,jdbcType=INTEGER}, #{activityid,jdbcType=INTEGER},
+		#{remark,jdbcType=VARCHAR},
+		#{startdate,jdbcType=TIMESTAMP},
+		#{enddate,jdbcType=TIMESTAMP}, #{isdisable,jdbcType=TINYINT},
+		#{imgurl,jdbcType=VARCHAR}, #{isdelete,jdbcType=TINYINT},
+		#{packetnum,jdbcType=VARCHAR},
+		#{smokeinuserid,jdbcType=INTEGER},
+		#{smokeindate,jdbcType=TIMESTAMP}, #{usinguserid,jdbcType=INTEGER},
+		#{usingdate,jdbcType=TIMESTAMP}, #{createdate,jdbcType=TIMESTAMP},
+		#{modifydate,jdbcType=TIMESTAMP}
+		)
+	</insert>
+	<insert id="insertSelective" parameterType="net.joystart.activity.entity.ActivityRedPacket">
+		insert into t_base_activity_redpackets
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="activityid != null">
+				activityID,
+			</if>
+			<if test="remark != null">
+				remark,
+			</if>
+			<if test="startdate != null">
+				startDate,
+			</if>
+			<if test="enddate != null">
+				endDate,
+			</if>
+			<if test="isdisable != null">
+				isDisable,
+			</if>
+			<if test="imgurl != null">
+				imgUrl,
+			</if>
+			<if test="isdelete != null">
+				isDelete,
+			</if>
+			<if test="packetnum != null">
+				packetNum,
+			</if>
+			<if test="smokeinuserid != null">
+				smokeInUserId,
+			</if>
+			<if test="smokeindate != null">
+				smokeInDate,
+			</if>
+			<if test="usinguserid != null">
+				usingUserId,
+			</if>
+			<if test="usingdate != null">
+				usingDate,
+			</if>
+			<if test="createdate != null">
+				createDate,
+			</if>
+			<if test="modifydate != null">
+				modifyDate,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="activityid != null">
+				#{activityid,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				#{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="startdate != null">
+				#{startdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="enddate != null">
+				#{enddate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isdisable != null">
+				#{isdisable,jdbcType=TINYINT},
+			</if>
+			<if test="imgurl != null">
+				#{imgurl,jdbcType=VARCHAR},
+			</if>
+			<if test="isdelete != null">
+				#{isdelete,jdbcType=TINYINT},
+			</if>
+			<if test="packetnum != null">
+				#{packetnum,jdbcType=VARCHAR},
+			</if>
+			<if test="smokeinuserid != null">
+				#{smokeinuserid,jdbcType=INTEGER},
+			</if>
+			<if test="smokeindate != null">
+				#{smokeindate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="usinguserid != null">
+				#{usinguserid,jdbcType=INTEGER},
+			</if>
+			<if test="usingdate != null">
+				#{usingdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createdate != null">
+				#{createdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifydate != null">
+				#{modifydate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<!-- 批量插入红包数据 -->
+	<insert id="batchInsertActivityRedPacket" useGeneratedKeys="true"
+		parameterType="java.util.List">
+		<selectKey resultType="int" keyProperty="id" order="AFTER">
+			select
+			LAST_INSERT_ID()
+		</selectKey>
+		insert into t_base_activity_redpackets
+		(
+		activityId,
+		remark,
+		startdate,
+		enddate,
+		isdisable,
+		imgurl,
+		packetnum,
+		createdate
+		)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(
+			#{item.activityid,jdbcType=INTEGER},
+			#{item.remark,jdbcType=VARCHAR},
+			#{item.startdate,jdbcType=TIMESTAMP},
+			#{item.enddate,jdbcType=TIMESTAMP},
+			#{item.isdisable,jdbcType=TINYINT},
+			#{item.imgurl,jdbcType=VARCHAR},
+			#{item.packetnum,jdbcType=VARCHAR},
+			#{item.createdate,jdbcType=TIMESTAMP}
+			)
+		</foreach>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="net.joystart.activity.entity.ActivityRedPacket">
+		update t_base_activity_redpackets
+		<set>
+			<if test="activityid != null">
+				activityID = #{activityid,jdbcType=INTEGER},
+			</if>
+			<if test="remark != null">
+				remark = #{remark,jdbcType=VARCHAR},
+			</if>
+			<if test="startdate != null">
+				startDate = #{startdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="enddate != null">
+				endDate = #{enddate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isdisable != null">
+				isDisable = #{isdisable,jdbcType=TINYINT},
+			</if>
+			<if test="imgurl != null">
+				imgUrl = #{imgurl,jdbcType=VARCHAR},
+			</if>
+			<if test="isdelete != null">
+				isDelete = #{isdelete,jdbcType=TINYINT},
+			</if>
+			<if test="packetnum != null">
+				packetNum = #{packetnum,jdbcType=VARCHAR},
+			</if>
+			<if test="smokeinuserid != null">
+				smokeInUserId = #{smokeinuserid,jdbcType=INTEGER},
+			</if>
+			<if test="smokeindate != null">
+				smokeInDate = #{smokeindate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="usinguserid != null">
+				usingUserId = #{usinguserid,jdbcType=INTEGER},
+			</if>
+			<if test="usingdate != null">
+				usingDate = #{usingdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="createdate != null">
+				createDate = #{createdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifydate != null">
+				modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="net.joystart.activity.entity.ActivityRedPacket">
+		update
+		t_base_activity_redpackets
+		set activityID =
+		#{activityid,jdbcType=INTEGER},
+		remark = #{remark,jdbcType=VARCHAR},
+		startDate = #{startdate,jdbcType=TIMESTAMP},
+		endDate =
+		#{enddate,jdbcType=TIMESTAMP},
+		isDisable =
+		#{isdisable,jdbcType=TINYINT},
+		imgUrl = #{imgurl,jdbcType=VARCHAR},
+		isDelete = #{isdelete,jdbcType=TINYINT},
+		packetNum =
+		#{packetnum,jdbcType=VARCHAR},
+		smokeInUserId =
+		#{smokeinuserid,jdbcType=INTEGER},
+		smokeInDate =
+		#{smokeindate,jdbcType=TIMESTAMP},
+		usingUserId =
+		#{usinguserid,jdbcType=INTEGER},
+		usingDate =
+		#{usingdate,jdbcType=TIMESTAMP},
+		createDate =
+		#{createdate,jdbcType=TIMESTAMP},
+		modifyDate =
+		#{modifydate,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<!-- 逻辑批量删除活动 -->
+	<update id="deleteActivityRedPacket" parameterType="java.util.HashMap">
+		update t_base_activity_redpackets
+		set isDelete = 1
+		where id in
+		<foreach item="id" index="index" collection="array" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+	</update>
+
+</mapper>

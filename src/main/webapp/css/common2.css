@@ -1,0 +1,74 @@
+::-webkit-scrollbar  
+{  
+    width: 8px;  
+    height: 10px;  
+    background-color: #F5F5F5;  
+}  
+    
+::-webkit-scrollbar-track  
+{  
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);  
+    border-radius: 0px;  
+    background-color: #F5F5F5;  
+}  
+  
+::-webkit-scrollbar-thumb  
+{  
+    border-radius: 0px;  
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);  
+    background-color: #505b6b;  
+}
+
+*{
+	scrollbar-arrow-color: rgba(0,0,0,0.6); /*娑撳顫楃粻顓炪仈閻ㄥ嫰顤侀懝锟�*/
+	scrollbar-face-color: rgba(0,0,0,0.3);  /*缁斿缍嬪姘З閺夛紕娈戞０婊嗗閿涘牆瀵橀幏顒傤唲婢舵挳鍎撮崚鍡欐畱閼冲本娅欓懝璇х礆*/
+	scrollbar-3dlight-color: #37424f; /*缁斿缍嬪姘З閺夆�插瘨鏉堝湱娈戞０婊嗗*/
+	scrollbar-highlight-color: #37424f;/*濠婃艾濮╅弶锛勬畱妤傛ü瀵掓０婊嗗閿涘牆涔忛梼鏉戝閿涚噦绱�*/
+	scrollbar-shadow-color: #37424f;; /*缁斿缍嬪姘З閺夛繝妲捐ぐ杈╂畱妫版粏澹�*/
+	scrollbar-darkshadow-color: #37424f;; /*缁斿缍嬪姘З閺夆�愁樆闂冩潙濂栭惃鍕杹閼癸拷*/
+	scrollbar-track-color: #F5F5F5; /*缁斿缍嬪姘З閺壜ゅ剹閺咁垶顤侀懝锟�*/
+	scrollbar-base-color:#F5F5F5; /*濠婃艾濮╅弶锛勬畱閸╅缚澹�*/
+}
+/* .logo h1 {color:#FFFFFF !important;font-size:18px;font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti, "Microsoft YaHei";}
+.logo h1 *{color:#FFFFFF !important;font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti, "Microsoft YaHei";} */
+
+.logo h1 {color:#fff !important;font-size:18px;font-family:font-family:"微软雅黑", "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti, "Microsoft YaHei";}
+.logo h1 *{color:#fff !important;font-family:"微软雅黑", "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti, "Microsoft YaHei";}
+
+.menu .icon{width:19px;height:17px;background:url(http://icss2.baojia.com/app/image/list.png) no-repeat;display:inline-block;margin-right:5px;background-size:100%;}
+.menu .newnet1{background-position:0 4px;}
+.menu .newnet2{background-position:0 -42px;}
+.menu .newnet3{background-position:0 -85px;}
+.menu .newnet4{background-position:0 -128px;}
+.menu .newcar1{background-position:0 -228px;}
+.menu .newcar2{background-position:0 -268px;}
+.menu .newcar3{background-position:0 -314px;}
+.menu .newcar4{background-position:0 -357px;}
+.menu .manage1{background-position:0 -454px;}
+.menu .manage2{background-position:0 -498px;}
+.menu .newicon1{background-position:0 -542px;}
+.menu .newicon2{background-position:0 -589px;}
+.menu .newicon3{background-position:0 -633px;}
+.menu .newicon4{background-position:0 -677px;}
+.menu .newicon5{background-position:0 -721px;}
+.menu .newicon6{background-position:0 -767px;}
+.menu .newicon7{background-position:0 -810px;}
+.menu .newicon8{background-position:0 -498px;}	
+.p_body .header .logo {width:auto;}		
+.p_body .header .logo .con{display:inline-block;padding-left:10px;}
+.p_body .header .logo .cloud{  display: inline-block;background: url(http://yun.baojia.com/image/logo.png) 0px 10px no-repeat;width: 50px;height: 59px;vertical-align: middle;}a.legend{font-size:18px;}
+.p_body .menuList .menu
+{
+    font-size: 12px;
+    color: #fff;
+    position: relative;
+    min-height: 40px;
+    background: #22282e;
+    border-bottom: 1px solid #414d5c;
+}
+/* .p_body .header .logo .con {color:#FFFFFF;font-size:16px;} */
+
+.p_body .header .logo .con {color:#000;font-size:16px;}
+
+
+.p_body .cont .left { *min-width:50px; *min-width:50px !important;min-width:50px !important;}

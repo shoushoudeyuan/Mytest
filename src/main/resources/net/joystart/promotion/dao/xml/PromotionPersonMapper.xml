@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.promotion.dao.PromotionPersonMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.promotion.entity.PromotionPerson" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="bindCustomerId" property="bindCustomerId" jdbcType="INTEGER" />
+    <result column="businessId" property="businessId" jdbcType="INTEGER" />
+    <result column="orderMoney" property="ordermoney" jdbcType="DECIMAL" />
+    <result column="pushMoney" property="pushmoney" jdbcType="DECIMAL" />
+    <result column="userName" property="username" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="sendMsg" property="sendmsg" jdbcType="TINYINT" />
+    <result column="isDisable" property="isdisable" jdbcType="TINYINT" />
+    <result column="isDelete" property="isDelete" jdbcType="TINYINT" />
+    <result column="welcomeMsg" property="welcomemsg" jdbcType="VARCHAR" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+    <result column="userName" property="userName" jdbcType="VARCHAR" />
+    <result column="realName" property="realName" jdbcType="VARCHAR" />
+    <result column="customerMobile" property="customerMobile" jdbcType="VARCHAR" />
+    <result column="invitationCode" property="invitationCode" jdbcType="VARCHAR" />
+    <result column="channelCode" property="channelCode" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id,businessId,bindCustomerId, userName, name, mobile, isDelete, sendMsg, isDisable, welcomeMsg, 
+    createDate, modifyDate,channelCode
+  </sql>
+  
+  <select id="list" resultMap="BaseResultMap" parameterType="java.util.HashMap" >
+    select 
+    <include refid="Base_Column_List" />
+    ,(select userName from t_base_customer where  id = bindCustomerId) userName,
+    (select name from t_base_customer where  id = bindCustomerId) realName,
+    (select mobile from t_base_customer where  id = bindCustomerId) customerMobile,
+    (select invitationcode from t_base_customer where  id = bindCustomerId) invitationCode,
+    (select SUM(case when o.actualPaymentCost >= 0 then o.actualPaymentCost else o.orderDiscountCost end) from t_order o,t_promotion_performance p where o.id = p.orderId and p.personId = pp.id) orderMoney,
+    (select sum(p.pushMoney) from t_order o, t_promotion_performance p WHERE o.id = p.orderId and p.personId = pp.id) pushMoney
+    from t_promotion_person pp where isDelete = '0'
+    <if test="businessId != null" >
+    and businessId = #{businessId}
+    </if>
+    <if test="username != null" >
+         and username like #{username}
+        </if>
+        <if test="name != null" >
+         and name like #{name}
+        </if>
+        <if test="mobile != null" >
+         and mobile like #{mobile}
+        </if>
+        <if test="isdisable != null" >
+         and isdisable = #{isdisable}
+        </if>
+        order by id DESC
+        <if test="rowStart != null and pageSize !=null " >
+         limit #{rowStart},#{pageSize}
+         </if>
+  </select>
+  
+  <select id="count" resultType="java.lang.Integer" parameterType="java.util.HashMap" >
+    select count(id)
+    from t_promotion_person where isDelete = '0'
+    <if test="businessId != null" >
+         and businessId = #{businessId}
+        </if>
+    <if test="username != null" >
+         and username like #{username}
+        </if>
+        <if test="name != null" >
+         and name like #{name}
+        </if>
+        <if test="mobile != null" >
+         and mobile like #{mobile}
+        </if>
+        order by id DESC
+  </select>
+  
+  <select id="selectPersonByUserName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_promotion_person
+    where userName = #{userName} AND isDelete=0
+  </select>
+  
+  <select id="selectPersonById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_promotion_person
+    where id = #{id}
+  </select>
+  
+  <update id="deletePerson" parameterType="java.util.List" >
+    update t_promotion_person set isDelete=1 where id in
+        <foreach collection="list" item = "value" open="(" separator="," close=")">
+        #{value}  
+        </foreach> 
+  </update>
+  
+ 
+  <insert id="insertPerson" parameterType="net.joystart.promotion.entity.PromotionPerson" >
+    insert into t_promotion_person
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="bindCustomerId != null" >
+        bindCustomerId,
+      </if>
+      <if test="businessId != null" >
+        businessId,
+      </if>
+      <if test="username != null" >
+        userName,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="mobile != null" >
+        mobile,
+      </if>
+      <if test="isDelete != null" >
+        isDelete,
+      </if>
+      <if test="sendmsg != null" >
+        sendMsg,
+      </if>
+      <if test="isdisable != null" >
+        isDisable,
+      </if>
+      <if test="welcomemsg != null" >
+        welcomeMsg,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+      <if test="channelCode != null" >
+        channelCode
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="bindCustomerId != null" >
+        #{bindCustomerId,jdbcType=INTEGER},
+      </if>
+      <if test="businessId != null" >
+        #{businessId,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="sendmsg != null" >
+        #{sendmsg,jdbcType=TINYINT},
+      </if>
+      <if test="isdisable != null" >
+        #{isdisable,jdbcType=TINYINT},
+      </if>
+      <if test="welcomemsg != null" >
+        #{welcomemsg,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="channelCode != null" >
+        #{channelCode,jdbcType=VARCHAR}
+      </if>
+    </trim>
+  </insert>
+  <update id="updatePerson" parameterType="net.joystart.promotion.entity.PromotionPerson" >
+    update t_promotion_person
+    <set >
+    <if test="bindCustomerId != null" >
+        bindCustomerId = #{bindCustomerId,jdbcType=INTEGER},
+      </if>
+      <if test="businessId != null" >
+        businessId = #{businessId,jdbcType=INTEGER},
+      </if>
+      <if test="username != null" >
+        userName = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="mobile != null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="isDelete != null" >
+        isDelete = #{isDelete,jdbcType=TINYINT},
+      </if>
+      <if test="sendmsg != null" >
+        sendMsg = #{sendmsg,jdbcType=TINYINT},
+      </if>
+      <if test="isdisable != null" >
+        isDisable = #{isdisable,jdbcType=TINYINT},
+      </if>
+      <if test="welcomemsg != null" >
+        welcomeMsg = #{welcomemsg,jdbcType=VARCHAR},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="channelCode != null" >
+        channelCode = #{channelCode,jdbcType=VARCHAR},
+      </if>
+
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="getPerformanceList" resultType="java.util.Map"
+        parameterType="java.util.Map">
+        SELECT 
+    o.orderNo,
+    (SELECT 
+            userName
+        FROM
+            t_base_customer
+        WHERE
+            id = o.customerID) userName,
+    (SELECT 
+            t.name
+        FROM
+            t_base_customer t
+        WHERE
+            id = o.customerID) name,
+    (case when o.actualPaymentCost >= 0 then o.actualPaymentCost else o.orderDiscountCost end) actualPaymentCost,
+    p.pushPercent pushPercent,
+    p.pushMoney,
+    o.paymentDate finishDate,
+    p.startDays,
+    p.endDays
+FROM
+    t_order o,
+    t_promotion_performance p  
+WHERE
+    o.id = p.orderId and o.customerid
+        in  (SELECT 
+            id
+        FROM
+            t_base_customer
+        WHERE
+            customerId = o.customerid and recommendCode = #{invitationCode} )
+            
+      <if test="startDate != null" >
+        and o.paymentDate &gt;= #{startDate}
+      </if>
+       <if test="endDate != null" >
+       and  o.paymentDate &lt;= #{endDate}
+      </if>
+      order by p.id desc
+      <if test="rowStart != null and pageSize !=null " >
+         limit #{rowStart},#{pageSize}
+         </if>
+    </select>
+  
+  <select id="performanceCount" resultType="java.lang.Integer"
+        parameterType="java.util.Map">
+        SELECT 
+    count(p.id)
+FROM
+    t_order o,
+    t_promotion_performance p
+WHERE
+    o.id = p.orderId and o.customerid
+        in  (SELECT 
+            id
+        FROM
+            t_base_customer
+        WHERE
+            customerId = o.customerid and recommendCode = #{invitationCode} )
+      <if test="startDate != null" >
+       and o.paymentDate &gt;= #{startDate}
+      </if>
+       <if test="endDate != null" >
+       and o.paymentDate &lt;= #{endDate}
+      </if>
+    </select>
+    
+    <select id="selectPersonByCustomerId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_promotion_person p  where p.bindCustomerId = 
+     (select (select cu.id from t_base_customer cu where cu.invitationCode = c.recommendCode) from t_base_customer c where c.id = #{customerId})
+    </select>
+    
+    <select id="selectPersonByBindCustomerId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+     from t_promotion_person where bindCustomerId = #{bindCustomerId}
+    </select>
+	
+	<select id="selectByChanneCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_promotion_person where channelCode = #{channelCode} and isDelete = 0
+	</select>
+	
+	<select id="selectProPersonByChanneCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select pp.*
+		from t_promotion_person pp
+		INNER JOIN `t_promotion_business` pb ON pp.`businessId` = pb.`id`
+		where pp.channelCode = #{channelCode} and pp.isDelete = 0 and pb.isDelete = 0 
+	</select>
+	
+</mapper>

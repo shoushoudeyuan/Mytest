@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.setting.dao.LimitCarNumberMapper">
+
+    <select id="limitCarNumberList" resultType="net.joystart.setting.entity.LimitCarNumber"
+        parameterType="java.util.HashMap">
+        SELECT
+        tcc.id,tcc.cityId,tcc.date,tcc.limitCarNum,tc.name as city
+        FROM
+        t_dic_limited_car_number tcc
+        INNER JOIN t_base_area tc on tc.id=tcc.cityId
+        WHERE 1=1
+        <if test="startDate != null">
+            AND tcc.date &gt;= #{startDate,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endDate != null">
+            AND tcc.date  &lt;= #{endDate,jdbcType=TIMESTAMP}
+        </if>
+        <if test="cityId != null">
+            AND tcc.cityId = #{cityId,jdbcType=INTEGER}
+        </if>
+        order by id DESC
+        <if test="rowStart != null and pageSize != null">
+            limit #{rowStart},#{pageSize}
+        </if>
+
+    </select>
+    <select id="getLimitCarNumberCount" resultType="java.lang.Integer"
+        parameterType="java.util.HashMap">
+        SELECT count(1)
+        FROM t_dic_limited_car_number tcc
+        WHERE 1=1
+        <if test="startDate != null">
+            AND tcc.date &gt;= #{startDate,jdbcType=TIMESTAMP}
+        </if>
+        <if test="endDate != null">
+            AND tcc.date  &lt;= #{endDate,jdbcType=TIMESTAMP}
+        </if>
+        <if test="cityId != null">
+            AND tcc.cityId = #{cityId,jdbcType=INTEGER}
+        </if>
+    </select>
+    <insert id="addLimitCarNumber" parameterType="java.util.HashMap">
+        insert into t_dic_limited_car_number
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createDate != null">
+                createDate,
+            </if>
+            <if test="id != null">
+                id,
+            </if>
+            <if test="cityId != null">
+                cityId,
+            </if>
+            <if test="date != null">
+                date,
+            </if>
+            <if test="limitCarNum != null">
+                limitCarNum
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if>
+            <if test="cityId != null">
+                #{cityId,jdbcType=INTEGER},
+            </if>
+            <if test="date != null">
+                #{date,jdbcType=TIMESTAMP},
+            </if>
+            <if test="limitCarNum != null">
+                #{limitCarNum,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+
+    <delete id="deleteLimitCarNumbers" parameterType="java.util.List">
+        delete from
+        t_dic_limited_car_number
+        where id in
+        <foreach collection="list" item="value" open="(" separator=","
+            close=")">
+            #{value}
+        </foreach>
+    </delete>
+
+    <delete id="deleteLimitCarNumber" parameterType="java.util.HashMap">
+        delete from
+        t_dic_limited_car_number
+        where 1=1
+        <if test="id != null"> and id = #{id,jdbcType=INTEGER} </if>
+    </delete>
+    <update id="updateLimitCarNumber" parameterType="java.util.HashMap">
+        update t_dic_limited_car_number
+        <set>
+            <if test="cityId != null">
+                cityId = #{cityId,jdbcType=INTEGER},
+            </if>
+            <if test="limitCarNum != null">
+                limitCarNum = #{limitCarNum,jdbcType=VARCHAR},
+            </if>
+            <if test="date != null">
+                date = #{date,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+
+    <select id="limitCarNumberSettingList" resultType="net.joystart.setting.entity.LimitCarNumberSetting"
+        parameterType="java.util.HashMap">
+        SELECT
+        tcc.id,tcc.cityId,tcc.oneLimitCarNum,tcc.twoLimitCarNum,
+        tcc.threeLimitCarNum,tcc.fourLimitCarNum,tcc.fiveLimitCarNum,
+        tcc.sixLimitCarNum,tcc.sevenLimitCarNum,tcc.startDate,tcc.endDate,
+        tc.name as city
+        FROM
+        t_dic_limited_car_number_setting tcc
+        INNER JOIN
+        t_base_area tc on tc.id=tcc.cityId
+        WHERE 1=1
+        <if test="cityId != null">
+            AND tcc.cityId = #{cityId,jdbcType=INTEGER}
+        </if>
+        order by id DESC
+        <if test="rowStart != null and pageSize != null">
+            limit #{rowStart},#{pageSize}
+        </if>
+
+    </select>
+    <select id="getLimitCarNumberSettingCount" resultType="java.lang.Integer"
+        parameterType="java.util.HashMap">
+        SELECT count(1)
+        FROM t_dic_limited_car_number_setting tcc
+        WHERE 1=1
+        <if test="cityId != null">
+            AND tcc.cityId = #{cityId,jdbcType=INTEGER}
+        </if>
+        <if test="id != null">
+            AND tcc.id != #{id,jdbcType=INTEGER}
+        </if>
+    </select>
+    <insert id="addLimitCarNumberSetting" parameterType="java.util.HashMap">
+        insert into t_dic_limited_car_number_setting
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="createDate != null">
+                createDate,
+            </if>
+            <!-- <if test="id != null">
+                id,
+            </if> -->
+            <if test="cityId != null">
+                cityId,
+            </if>
+            <if test="oneLimitCarNum != null">
+                oneLimitCarNum,
+            </if>
+            <if test="twoLimitCarNum != null">
+                twoLimitCarNum,
+            </if>
+            <if test="threeLimitCarNum != null">
+                threeLimitCarNum,
+            </if>
+            <if test="fourLimitCarNum != null">
+                fourLimitCarNum,
+            </if>
+            <if test="fiveLimitCarNum != null">
+                fiveLimitCarNum,
+            </if>
+            <if test="sixLimitCarNum != null">
+                sixLimitCarNum,
+            </if>
+            <if test="sevenLimitCarNum != null">
+                sevenLimitCarNum,
+            </if>
+            <if test="startDate != null">
+                startDate,
+            </if>
+            <if test="endDate != null">
+                endDate,
+            </if>
+
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+        <!--    <if test="id != null">
+                #{id,jdbcType=INTEGER},
+            </if> -->
+            <if test="cityId != null">
+                #{cityId,jdbcType=INTEGER},
+            </if>
+            <if test="oneLimitCarNum != null">
+                #{oneLimitCarNum,jdbcType=VARCHAR},
+            </if>
+            <if test="twoLimitCarNum != null">
+                #{twoLimitCarNum,jdbcType=VARCHAR},
+            </if>
+            <if test="threeLimitCarNum != null">
+                #{threeLimitCarNum,jdbcType=VARCHAR},
+            </if>
+            <if test="fourLimitCarNum != null">
+                #{fourLimitCarNum,jdbcType=VARCHAR},
+            </if>
+            <if test="fiveLimitCarNum != null">
+                #{fiveLimitCarNum,jdbcType=VARCHAR},
+            </if>
+            <if test="sixLimitCarNum != null">
+                #{sixLimitCarNum,jdbcType=VARCHAR},
+            </if>
+            <if test="sevenLimitCarNum != null">
+                #{sevenLimitCarNum,jdbcType=VARCHAR},
+            </if>
+            <if test="startDate != null">
+                #{startDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endDate != null">
+                #{endDate,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateLimitCarNumberSetting" parameterType="java.util.HashMap">
+        update t_dic_limited_car_number_setting
+        <set>
+            <if test="cityId != null">
+                cityId = #{cityId,jdbcType=INTEGER},
+            </if>
+            <if test="startDate != null">
+                startDate = #{startDate,jdbcType=TIMESTAMP},
+            </if>
+            
+            <if test="endDate != null">
+                endDate = #{endDate,jdbcType=TIMESTAMP},
+            </if>
+                oneLimitCarNum = #{oneLimitCarNum,jdbcType=VARCHAR},
+                twoLimitCarNum = #{twoLimitCarNum,jdbcType=VARCHAR},
+                threeLimitCarNum = #{threeLimitCarNum,jdbcType=VARCHAR},
+                fourLimitCarNum = #{fourLimitCarNum,jdbcType=VARCHAR},
+                fiveLimitCarNum = #{fiveLimitCarNum,jdbcType=VARCHAR},
+                sixLimitCarNum = #{sixLimitCarNum,jdbcType=VARCHAR},
+                sevenLimitCarNum = #{sevenLimitCarNum,jdbcType=VARCHAR}
+            
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
+
+    <delete id="deleteLimitCarNumberSetting" parameterType="java.util.HashMap">
+        delete setting,cm from
+        t_dic_limited_car_number_setting setting LEFT JOIN t_dic_limited_car_number cm 
+        ON setting.cityId=cm.cityId
+        where 1=1
+        <if test="id != null">
+            and setting.id = #{id,jdbcType=INTEGER}
+        </if>
+    </delete>
+    <delete id="deleteLimitCarNumberSettings" parameterType="java.util.List">
+        delete setting,cm from
+        t_dic_limited_car_number_setting setting LEFT JOIN t_dic_limited_car_number cm 
+        ON setting.cityId=cm.cityId
+        where setting.id in
+        <foreach collection="list" item="value" open="(" separator=","
+            close=")">
+            #{value}
+        </foreach>
+    </delete>
+    <select id="cityList" resultType="java.util.HashMap">
+        SELECT id
+        as cityId,name as city from t_base_area where parent is null
+    </select>
+
+    <select id="getLimitCarNumberList" resultType="net.joystart.setting.entity.LimitCarNumber"
+        parameterType="java.util.HashMap">
+        SELECT * FROM t_dic_limited_car_number tcc
+        WHERE  tcc.date = #{date,jdbcType=TIMESTAMP}
+        order by tcc.date DESC
+    </select>
+    <select id="selectLimitCarNumberCount" resultType="java.lang.Integer"
+        parameterType="java.util.HashMap">
+        SELECT count(1)
+        FROM t_dic_limited_car_number tcc
+        inner join t_base_service_city sc on tcc.cityId=sc.provinceID 
+        WHERE 1=1
+        <if test="date != null">
+            AND tcc.date = #{date,jdbcType=TIMESTAMP}
+        </if>
+        <if test="cityId != null">
+            AND sc.id = #{provinceID,jdbcType=INTEGER}
+        </if>
+        <if test="PlateNumber != null">
+            AND tcc.limitCarNum = right(#{PlateNumber,jdbcType=VARCHAR}, 1)
+        </if>
+    </select>
+    
+    <delete id="deleteLimitCarNumberByCityId" parameterType="java.lang.Integer">
+        delete from t_dic_limited_car_number
+        where  cityId = #{cityId,jdbcType=INTEGER}
+    </delete>
+</mapper>

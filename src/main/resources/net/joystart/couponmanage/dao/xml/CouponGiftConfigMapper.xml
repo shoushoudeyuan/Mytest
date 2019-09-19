@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.couponmanage.dao.CouponGiftConfigMapper" >
+  
+  <update id="updateByIdSelective" parameterType="net.joystart.couponmanage.entity.giftconfig.CouponGiftConfig" >
+    update t_base_coupon_gift_config
+    <set >
+      <if test="ruleName != null" >
+        ruleName = #{ruleName,jdbcType=VARCHAR},
+      </if>
+      <if test="isValidate != null" >
+        isValidate = #{isValidate,jdbcType=INTEGER},
+      </if>
+            <if test="configItem != null" >
+        configItem = #{configItem,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+	where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <select id="selectAll" resultType="net.joystart.couponmanage.entity.giftconfig.CouponGiftConfig">
+  	select * from t_base_coupon_gift_config where isDelete = 0;
+  </select>
+  
+  <select id="selectById" parameterType="Integer" resultType="net.joystart.couponmanage.entity.giftconfig.CouponGiftConfig">
+  	select * from t_base_coupon_gift_config where isDelete = 0 and id = #{id}
+  </select>
+  
+  <select id="selectByEnumCode" parameterType="Integer" resultType="net.joystart.couponmanage.entity.giftconfig.CouponGiftConfig">
+  	select * from t_base_coupon_gift_config where isDelete = 0 and enumCode = #{enumCode}
+  </select>
+  
+  <select id="selectByRuleName" parameterType="String" resultType="net.joystart.couponmanage.entity.giftconfig.CouponGiftConfig">
+  	select * from t_base_coupon_gift_config where ruleName like concat(concat('%',#{ruleName}),'%')
+  </select>
+</mapper>

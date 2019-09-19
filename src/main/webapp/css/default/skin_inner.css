@@ -1,0 +1,78 @@
+﻿@charset "utf-8";
+
+/* 内层皮肤 */
+
+/* deepblue链接 */
+/*李建雷 修改开始*/
+a {
+	color: #22ab39;
+	text-decoration: none;
+}
+
+a:hover {
+	color: #0b611a;
+	text-decoration: none;
+}
+
+/* 查询 */
+.div_search {
+	margin-bottom:5px;
+	padding-bottom:5px;
+	font-size:16px;
+	width:98%;
+	margin:0px auto;
+	line-height:30px;
+	
+}
+/*李建雷 修改结束*/
+.div_search .search_txt {
+	text-algin: right;
+}
+
+.div_search .search_txt input.input_txt {
+	
+}
+
+.div_search .search_txt input.input_checkbox {
+	border: none;
+	background: none;
+}
+
+.div_search .search_txt input.input_radio {
+	border: none;
+	background: none;
+}
+/* 每行显示6列 */
+.div_search .row_6 div {
+	border: 0px solid #ccc;
+	margin: 5px; 
+	padding-right: 5px;
+	display: inline-block; /*注意此处采用行内元素的方式*/
+	width:252px;
+	text-align:right;
+}
+
+/*李建雷 修改开始*/
+/*.div_search .row_6 div[class="search_txt"] {
+	width: 170px;
+	height: 25px;
+	text-align: right;
+}*/
+/*李建雷 修改结束*/
+/* 定义文本框的宽度 */
+.div_search .row_6 div input[type="text"] {
+	width: 150px;
+}
+/* 重新定义easyUI格式的下拉框的宽度和高度 */
+.div_search .row_6 div span[class*="combo"] {
+	width: 150px !important;
+	text-align: left;
+}
+
+.div_search .search_a a {
+	margin-left: 5px;
+	margin-right: 5px;
+}
+.divh{
+	display:none;
+	}

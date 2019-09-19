@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.couponmanage.dao.CouponExchangeCodeMapper" >
+  
+  <resultMap id="BaseResultMap" type="net.joystart.couponmanage.entity.CouponExchangeCode" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="code" property="code" jdbcType="VARCHAR" />
+    <result column="activity_id" property="activityId" jdbcType="INTEGER" />
+    <result column="activity_name" property="activityName" jdbcType="VARCHAR" />
+    <result column="enddate" property="endDate" jdbcType="TIMESTAMP" />
+    <result column="coupon_package_id" property="couponPackageId" jdbcType="INTEGER" />
+    <result column="isexchanged" property="isExchanged" jdbcType="INTEGER" />
+    <result column="customer_id" property="customerId" jdbcType="INTEGER" />
+    <result column="exchange_date" property="exchangeDate" jdbcType="TIMESTAMP" />
+    <result column="createdate" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="modifydate" property="modifyDate" jdbcType="TIMESTAMP" />
+    <result column="isenable" property="isEnable" jdbcType="INTEGER" />
+    <result column="enddate" property="endDate" jdbcType="TIMESTAMP" />
+    <result column="isdelete" property="isDelete" jdbcType="INTEGER" />
+    <result column="mobile" property="customerMobile" jdbcType="INTEGER" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id,code,activity_id,coupon_package_id,isexchanged,customer_id,exchange_date,createdate,modifydate
+  </sql>
+  
+  <select id="getCouponExchangeCodeList" parameterType="Map" resultMap="BaseResultMap" >
+    select excode.*,cus.mobile from (SELECT * FROM t_base_coupon_exchange_code 
+    where activity_id=#{activityId} order by id desc limit #{startIndex},#{pageSize}) excode
+    left join t_base_customer cus on excode.customer_id=cus.id
+  </select>
+  
+  <select id="getCouponExchangeCodeCount" parameterType="Map" resultType="java.lang.Integer" >
+    select count(1) as countoo from (
+        SELECT * FROM t_base_coupon_exchange_code where activity_id=#{activityId}
+    ) a
+  </select>
+  
+  <select id="checkCouponExchangeCodeExist" parameterType="Map" resultMap="BaseResultMap" >
+    SELECT code.* FROM
+    t_base_coupon_exchange_code code
+        INNER JOIN
+    t_base_coupon_exchange_activity activity ON code.activity_id = activity.id
+        AND activity.isdelete = 1
+    WHERE isexchanged = 1 AND code = #{code}
+    LIMIT 1
+  </select>
+  
+  <select id="getValideCouponExchangeCodeByCode" parameterType="Map" resultMap="BaseResultMap" >
+    SELECT code.*,activity.isenable,activity.enddate,activity.isdelete FROM
+    t_base_coupon_exchange_code code
+        INNER JOIN
+    t_base_coupon_exchange_activity activity ON code.activity_id = activity.id
+    WHERE code = #{code} order by id desc
+    LIMIT 1
+  </select>
+  
+  
+ <insert id="addCouponExchangeCodeBatch" parameterType="net.joystart.couponmanage.entity.CouponExchangeCode" >
+    INSERT INTO t_base_coupon_exchange_code
+    (code,activity_id,coupon_package_id,isexchanged,createdate,modifydate)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.code},#{item.activityId}, #{item.couponPackageId},1,now(),now())
+    </foreach> 
+  </insert>
+  
+ <update id="updateCouponExchangeCode" parameterType="net.joystart.couponmanage.entity.CouponExchangeCode" >
+    update t_base_coupon_exchange_code
+    <set>
+      <if test="isExchanged != null" >
+        isexchanged = #{isExchanged},
+      </if>
+      <if test="customerId != null" >
+        customer_id = #{customerId},
+      </if>
+      <if test="exchangeDate != null" >
+        exchange_date = #{exchangeDate},
+      </if>
+      <if test="modifyDate != null" >
+        modifydate = #{modifyDate},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="deleteCouponExchangeCode" parameterType="java.util.List">
+    update t_base_coupon_exchange_code set isDelete = 2 
+    where id in 
+    <foreach collection="list" item="value" open="(" separator="," close=")">
+        #{value}
+    </foreach>
+  </update>
+  
+  <sql id="selectCondition" >
+    <if test="activityName != null">
+        and activity.activity_name like CONCAT('%',#{activityName},'%')
+    </if>
+    <if test="selectIds != null">
+        and activity.id in (${selectIds}) 
+    </if>
+  </sql>
+  
+  <select id="getCouponExchangeCodeList4Export" parameterType="Map" resultMap="BaseResultMap" >
+	SELECT 
+	    excode.*,
+	    activity.isdelete,
+	    activity.isenable,
+	    activity.activity_name,
+        activity.enddate,
+	    cus.mobile
+	FROM
+	    t_base_coupon_exchange_code excode
+	        LEFT JOIN
+	    t_base_coupon_exchange_activity activity ON activity.id = excode.activity_id
+	        LEFT JOIN
+	    t_base_customer cus ON excode.customer_id = cus.id
+	WHERE activity.isdelete=1
+	<include refid="selectCondition" />
+  </select>
+  
+</mapper>

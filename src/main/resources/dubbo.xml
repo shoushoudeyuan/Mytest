@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans        
+    http://www.springframework.org/schema/beans/spring-beans.xsd        
+    http://code.alibabatech.com/schema/dubbo        
+    http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+    
+	<!-- 公共信息，也可以用dubbo.properties配置 -->
+    <dubbo:application name="bjymktms" />
+    <dubbo:registry address="${dubbo.zkurl}"  username="${dubbo.zk.username}" password="${dubbo.zk.password}" file="/opt/web/dubbo-registry/${application.name}/dubbo-registry.properties" />
+    <dubbo:protocol name="dubbo" port="${dubbo.port}" threads="100"  host="${dubbo.host}" accesslog="true"/>
+    <dubbo:consumer check="false" filter="dataSourceFilter" timeout="60000" retries="0"/>
+    ${dubbo.monitor}
+    
+    <!-- 扫描注解包路径，多个包用逗号分隔，不填pacakge表示扫描当前ApplicationContext中所有的类 -->
+    <dubbo:annotation package="net.joystart" />
+    
+    <!-- 远程服务引用 -->
+    
+    <!-- ADMIN -->
+    <dubbo:reference id="sysUserService" interface="net.joystart.system.remote.service.ISysUserRemoteService"/>
+    
+    <!-- VMS -->
+    <dubbo:reference id="carManagerRemoteService" interface="net.joystart.carmanager.remote.service.ICarManagerRemoteService"/>
+    <dubbo:reference id="parkinglotRemoteService" interface="net.joystart.vehicle.remote.service.IParkinglotRemoteService"/>
+    <dubbo:reference id="vehicleRemoteService" interface="net.joystart.vehicle.remote.service.IVehicleRemoteService"/>
+    <dubbo:reference id="carPortRemoteService" interface="net.joystart.vehicle.remote.service.ICarPortRemoteService"/>
+    <dubbo:reference id="carTypeRemoteServiceImpl" interface="net.joystart.vehicle.remote.service.ICarTypeRemoteService"/>
+    
+    <!-- OMS -->
+    <dubbo:reference id="violationQueryRemoteService" interface="net.joystart.illegal.remote.service.IViolationQueryRemoteService"/>
+    <dubbo:reference id="customerInvoiceRemoteService" interface="net.joystart.invoice.remote.service.ICustomerInvoiceRemoteService"/>
+    <dubbo:reference id="orderService" interface="net.joystart.order.remote.service.IOrderRemoteService"/>
+    
+    <!-- CRM -->
+    <dubbo:reference id="messageRemoteService" interface="net.joystart.customer.remote.service.IMessageRemoteService"/>
+    <dubbo:reference id="customerAppidRemoteService" interface="net.joystart.customer.remote.service.ICustomerAppidRemoteService"/>
+    <dubbo:reference id="integralRemoteService" interface="net.joystart.customer.remote.service.IIntegralRemoteService"/>
+    <dubbo:reference id="customerService" interface="net.joystart.customer.remote.service.ICustomerRemoteService"/>
+    <dubbo:reference id="baseMessageTemplateRemoteService" interface="net.joystart.setting.remote.service.IBaseMessageTemplateRemoteService"/>
+    <dubbo:reference id="companyRemoteService" interface="net.joystart.enterprise.remote.service.ICompanyRemoteService"/>
+</beans>

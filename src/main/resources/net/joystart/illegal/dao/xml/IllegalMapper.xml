@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.illegal.dao.IllegalMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.illegal.entity.Illegal" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="recordNo" property="recordno" jdbcType="VARCHAR" />
+    <result column="vehicleID" property="vehicleid" jdbcType="INTEGER" />
+    <result column="illegalDate" property="illegaldate" jdbcType="TIMESTAMP" />
+    <result column="illegalReason" property="illegalreason" jdbcType="VARCHAR" />
+    <result column="illegalAddress" property="illegaladdress" jdbcType="VARCHAR" />
+    <result column="illegalFine" property="illegalfine" jdbcType="INTEGER" />
+    <result column="illegalScore" property="illegalscore" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="orderID" property="orderid" jdbcType="INTEGER" />
+    <result column="CreateDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="PlateNumber" property="plateNumber" jdbcType="VARCHAR" />
+    <result column="CarName" property="carName" jdbcType="VARCHAR" />
+     <result column="EngineNO" property="engineNO" jdbcType="VARCHAR" />
+      <result column="InsuranceDate" property="insuranceDate" jdbcType="TIMESTAMP" />
+       <result column="VIN" property="vin" jdbcType="VARCHAR" />
+       <result column="ReturnVehicleDate" property="returnVehicleDate" jdbcType="TIMESTAMP" /> 
+  </resultMap>
+  <resultMap id="vehicleResultMap" type="net.joystart.illegal.entity.Vehicle">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="PlateNumber" property="platenumber" jdbcType="VARCHAR" />
+		<result column="EngineNO" property="engineno" jdbcType="VARCHAR" />
+		<result column="VIN" property="vin" jdbcType="CHAR" />
+		<result column="cityPyName" property="cityPyName" jdbcType="VARCHAR" />
+	</resultMap>
+	<select id="orderStatusQuery" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		select orderstatus from t_order where id=#{id}
+	</select>
+	<select id="orderPayModeQuery" resultType="java.lang.Integer" parameterType="java.lang.Integer">
+		select paymode from t_base_customer_consumption where orderid=#{orderId} and issuccess=1
+	</select>
+	<update id="udateRelatedOrder" parameterType="java.util.Map" >
+		update t_base_order_illegal set OrderID=#{orderId} where id=#{illegalId}
+	</update>
+ <select id="orderCountQuery" resultType="java.lang.Integer" parameterType="java.util.Map">
+  	select count(1)
+  	from t_order o left join t_base_customer c on o.CustomerID=c.id 
+  	left join t_base_vehicle v on v.id=o.VehicleID
+  	where o.OrderStatus>=10 and o.VehicleID=#{vehicleid}
+  	 LIMIT #{startIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER};  
+  </select>	
+   <select id="orderQuery" resultType="net.joystart.illegal.entity.OrderDetail" parameterType="java.util.Map">
+  	select c.name,c.mobile,IFNULL(o.rentbranchname,o.rentParkName) rentbranchname,o.createdate,o.paymentdate,o.id,v.platenumber,o.orderstatus
+  	from t_order o left join t_base_customer c on o.CustomerID=c.id 
+  	left join t_base_vehicle v on v.id=o.VehicleID
+  	where o.OrderStatus>=10 and o.VehicleID=#{vehicleid} 
+  	 LIMIT #{startIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER};  
+  </select>	
+  <select id="carInfoQuery" resultMap="vehicleResultMap"  parameterType="java.lang.Integer">
+  	select v.PlateNumber,v.EngineNO,v.vin,c.cityPyName from t_base_vehicle v,t_base_service_city c where v.cityID=c.id and v.id= (select vehicleID from t_base_order_illegal where id=#{id});
+  </select>
+   <select id="sumIllegalScore" resultType="java.lang.Integer"  parameterType="java.lang.Integer">
+  	select sum(IllegalScore) as total from t_base_order_illegal where vehicleID= (select vehicleID from t_base_order_illegal where id=#{id})
+  </select>
+  <select id="illegalDetailQuery" resultMap="BaseResultMap"  parameterType="java.lang.Integer">
+  	select v.PlateNumber,v.InsuranceDate,v.EngineNO,v.VIN,i.RecordNo,i.IllegalDate,i.IllegalReason,
+    i.IllegalAddress,i.IllegalFine,i.IllegalScore,i.Status,i.OrderID,i.id,i.vehicleID
+    from t_base_order_illegal i left join t_base_vehicle v on i.vehicleID = v.ID where i.id=#{id}
+  </select>
+  <sql id="Base_Column_List" >
+    i.id, recordNo, illegalDate,i.status,PlateNumber,CarName,name,mobile,o.CreateDate,o.ReturnVehicleDate,i.orderID
+  </sql>
+  <select id="getIllegalQuery" resultMap="BaseResultMap" parameterType="java.util.Map">
+    select
+    <include refid="Base_Column_List" />
+    from t_base_order_illegal i left join t_base_vehicle v on i.vehicleID = v.ID
+	left join t_order o on i.OrderID=o.ID 
+	left join t_base_customer c on o.CustomerID=c.ID
+	<where>
+		<if test="carNo != null and carNo != ''">
+			PlateNumber like CONCAT('%',#{carNo},'%')
+		</if>
+		<if test="uName != null and uName != ''">
+			and name like CONCAT('%',#{uName},'%')
+		</if>
+		<if test="proStatus != -1">
+			and i.status = #{proStatus}
+		</if>
+		<if test="phone != null and phone != ''">
+			and mobile like CONCAT('%',#{phone},'%')
+		</if>
+		<if test="start != null and start != ''">
+			and i.illegaldate &gt;= #{start}
+		</if>
+		<if test="end != null and end != ''">
+			and i.illegaldate &lt;= #{end}
+		</if>
+	</where>
+	LIMIT #{startIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}; 
+  </select>
+  <select id="getIllegalTotalQuery" resultType="java.lang.Integer" parameterType="java.util.Map" >
+    select count(1) from 
+    t_base_order_illegal i left join t_base_vehicle v on i.vehicleID = v.ID
+	left join t_order o on i.OrderID=o.ID 
+	left join t_base_customer c on o.CustomerID=c.ID
+	<where>
+		<if test="carNo != null and carNo != ''">
+			PlateNumber like CONCAT('%',#{carNo},'%')
+		</if>
+		<if test="uName != null and uName != ''">
+			and name like CONCAT('%',#{uName},'%')
+		</if>
+		<if test="proStatus != -1">
+			and i.status = #{proStatus}
+		</if>
+		<if test="phone != null and phone != ''">
+			and mobile like CONCAT('%',#{phone},'%')
+		</if>
+		<if test="start != null and start != ''">
+			and o.CreateDate &gt;= #{start}
+		</if>
+		<if test="end != null and end != ''">
+			and o.CreateDate  &lt;= #{end}
+		</if>
+	</where>
+  </select>
+     <delete id="batchDeleteIllegalWithListOnlyId"  parameterType="java.util.List">   
+        DELETE FROM t_base_order_illegal where id in   
+        <foreach collection="list" item="id" open="("     
+            separator="," close=")">     
+            #{id,jdbcType=INTEGER}     
+        </foreach>     
+    </delete>  
+    <select id="queryNotPro"  resultType="java.lang.Integer" parameterType="java.util.List">
+    	select status from t_base_order_illegal where id in
+    	 <foreach collection="list" item="item" open="("     
+            separator="," close=")">     
+            #{item,jdbcType=INTEGER}     
+        </foreach>  
+    </select> 
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_base_order_illegal
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.joystart.illegal.entity.Illegal" >
+    insert into t_base_order_illegal (id, recordNo, vehicleID, 
+      illegalDate, illegalReason, illegalAddress, 
+      illegalFine, illegalScore, status, 
+      orderID, createDate, modifyDate
+      )
+    values (#{id,jdbcType=INTEGER}, #{recordno,jdbcType=VARCHAR}, #{vehicleid,jdbcType=INTEGER}, 
+      #{illegaldate,jdbcType=TIMESTAMP}, #{illegalreason,jdbcType=VARCHAR}, #{illegaladdress,jdbcType=VARCHAR}, 
+      #{illegalfine,jdbcType=INTEGER}, #{illegalscore,jdbcType=INTEGER}, #{status,jdbcType=TINYINT}, 
+      #{orderid,jdbcType=INTEGER}, #{createdate,jdbcType=TIMESTAMP}, #{modifydate,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="net.joystart.illegal.entity.Illegal" >
+    insert into t_base_order_illegal
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="recordno != null" >
+        recordNo,
+      </if>
+      <if test="vehicleid != null" >
+        vehicleID,
+      </if>
+      <if test="illegaldate != null" >
+        illegalDate,
+      </if>
+      <if test="illegalreason != null" >
+        illegalReason,
+      </if>
+      <if test="illegaladdress != null" >
+        illegalAddress,
+      </if>
+      <if test="illegalfine != null" >
+        illegalFine,
+      </if>
+      <if test="illegalscore != null" >
+        illegalScore,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="orderid != null" >
+        orderID,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="recordno != null" >
+        #{recordno,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleid != null" >
+        #{vehicleid,jdbcType=INTEGER},
+      </if>
+      <if test="illegaldate != null" >
+        #{illegaldate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="illegalreason != null" >
+        #{illegalreason,jdbcType=VARCHAR},
+      </if>
+      <if test="illegaladdress != null" >
+        #{illegaladdress,jdbcType=VARCHAR},
+      </if>
+      <if test="illegalfine != null" >
+        #{illegalfine,jdbcType=INTEGER},
+      </if>
+      <if test="illegalscore != null" >
+        #{illegalscore,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="orderid != null" >
+        #{orderid,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.joystart.illegal.entity.Illegal" >
+    update t_base_order_illegal
+    <set >
+      <if test="recordno != null" >
+        recordNo = #{recordno,jdbcType=VARCHAR},
+      </if>
+      <if test="vehicleid != null" >
+        vehicleID = #{vehicleid,jdbcType=INTEGER},
+      </if>
+      <if test="illegaldate != null" >
+        illegalDate = #{illegaldate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="illegalreason != null" >
+        illegalReason = #{illegalreason,jdbcType=VARCHAR},
+      </if>
+      <if test="illegaladdress != null" >
+        illegalAddress = #{illegaladdress,jdbcType=VARCHAR},
+      </if>
+      <if test="illegalfine != null" >
+        illegalFine = #{illegalfine,jdbcType=INTEGER},
+      </if>
+      <if test="illegalscore != null" >
+        illegalScore = #{illegalscore,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="orderid != null" >
+        orderID = #{orderid,jdbcType=INTEGER},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.joystart.illegal.entity.Illegal" >
+    update t_base_order_illegal
+    set recordNo = #{recordno,jdbcType=VARCHAR},
+      vehicleID = #{vehicleid,jdbcType=INTEGER},
+      illegalDate = #{illegaldate,jdbcType=TIMESTAMP},
+      illegalReason = #{illegalreason,jdbcType=VARCHAR},
+      illegalAddress = #{illegaladdress,jdbcType=VARCHAR},
+      illegalFine = #{illegalfine,jdbcType=INTEGER},
+      illegalScore = #{illegalscore,jdbcType=INTEGER},
+      status = #{status,jdbcType=TINYINT},
+      orderID = #{orderid,jdbcType=INTEGER},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bean="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans    
+                        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd       
+                        http://www.springframework.org/schema/context    
+                        http://www.springframework.org/schema/context/spring-context-4.3.xsd
+                        http://www.springframework.org/schema/tx 
+						http://www.springframework.org/schema/tx/spring-tx-4.3.xsd 
+						http://www.springframework.org/schema/aop 
+						http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+                        http://www.springframework.org/schema/mvc
+                        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+                        http://www.springframework.org/schema/task  
+						http://www.springframework.org/schema/task/spring-task-4.3.xsd">
+	<aop:aspectj-autoproxy ></aop:aspectj-autoproxy>
+	<context:annotation-config></context:annotation-config>
+	<context:component-scan base-package="net.joystart">
+	</context:component-scan>
+	
+	<!-- Redis配置开始 -->
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
+		<property name="maxTotal" value="1000" />
+		<property name="maxIdle" value="200" />
+		<property name="maxWaitMillis" value="2000" />
+	</bean>
+    	
+	<bean id="connectionFactory"
+		class="org.springframework.data.redis.connection.jedis.JedisConnectionFactory">
+		<property name="hostName" value="${redis.hostName}" />
+		<property name="port" value="${redis.port}" />
+		<property name="password" value="${redis.password}" />
+		<property name="usePool" value="true" />
+		<property name="poolConfig" ref="jedisPoolConfig" />
+	</bean>
+	
+	<bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="keySerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+		</property>
+		<property name="hashKeySerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.StringRedisSerializer" />
+		</property>
+		
+		<property name="valueSerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+		</property>
+		<property name="hashValueSerializer">
+			<bean
+				class="org.springframework.data.redis.serializer.JdkSerializationRedisSerializer" />
+		</property>
+	</bean>
+	<!-- Redis配置结束 -->
+	    
+	<!-- 将session放入redis -->
+	<bean id="redisHttpSessionConfiguration"
+	class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
+	    <property name="maxInactiveIntervalInSeconds" value="1800" />
+	</bean>
+	
+	<!-- 定时任务配置 -->
+    <bean:import resource="spring-task.xml"/>
+   
+	<!-- 数据库配置开始 -->
+	<bean:import resource="spring-data.xml"/>
+	
+	<!--平台数据源配置-->
+    <bean class="net.joystart.common.database.PlatChooseDataSource" id="platDataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                <entry key="cloud" value-ref="cloudDataSource"></entry>
+                <entry key="oauth" value-ref="oauthDataSource"></entry>
+                <entry key="box" value-ref="boxDataSource"></entry>
+                <entry key="oms" value-ref="omsDataSource"></entry>
+            </map>
+        </property>
+    </bean>
+    
+    <!--业务数据源配置-->
+    <bean class="net.joystart.common.database.ChooseDataSource" id="dataSource">
+        <property name="targetDataSources">
+            <map key-type="java.lang.String">
+                
+            </map>
+        </property>
+    </bean>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath*:net/joystart/**/dao/xml/*Mapper.xml"></property>
+	</bean>
+
+	<!-- 将映射文件与mapper类关联  -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="net.joystart.**.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property>
+	</bean>
+	
+	<bean id='sqlSession' class='org.mybatis.spring.SqlSessionTemplate' scope='prototype'>
+	    <constructor-arg index='0' ref='sqlSessionFactory' />
+	</bean>	
+
+	<!-- 事务管理配置注解方式 -->
+    <bean id='transactionManager'
+        class='org.springframework.jdbc.datasource.DataSourceTransactionManager'
+        p:dataSource-ref='dataSource' />
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" order="2"/>
+
+    <bean id="sqlSessionFactory_plat" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="platDataSource" />
+        <property name="mapperLocations" value="classpath*:net/joystart/**/daox/xml/*Mapper.xml"></property>
+    </bean>
+
+    <!-- 将映射文件与mapper类关联  -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="net.joystart.**.daox" />
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory_plat"></property>
+    </bean>
+    
+    <bean id='sqlSession_plat' class='org.mybatis.spring.SqlSessionTemplate' scope='prototype'>
+        <constructor-arg index='0' ref='sqlSessionFactory_plat' />
+    </bean>
+	
+	<!-- 为业务逻辑层的方法解析@DataSource注解  为当前线程的routeholder注入数据源key -->  
+	<bean id='dataSourceAspect' class='net.joystart.common.database.DataSourceAspect' />   
+	<aop:config proxy-target-class='true'>   
+		<aop:aspect id='dataSourceAspect' ref='dataSourceAspect' order='1'>   
+			<aop:pointcut id='tx' expression='execution(* net.joystart.*.dao.*.*(..)) or execution(* net.joystart.task.*.dao.*.*(..)) or execution(* net.joystart.*.daox.*.*(..)) or execution(* net.joystart.task.*.daox.*.*(..)) '/>
+			<aop:before pointcut-ref='tx' method='before' />              
+		</aop:aspect>
+	</aop:config>
+	
+	<!-- @Transactional事物注解的类和方法，调用前注入数据源key-->
+    <bean id='dataSourceAspect4Transactional' class='net.joystart.common.database.DataSourceAspect4Transactional' />   
+    <aop:config proxy-target-class='true'> 
+        <aop:aspect id='dataSourceAspect4Transactional' ref='dataSourceAspect4Transactional' order='1'>   
+            <aop:pointcut id='tx2' expression='@annotation(org.springframework.transaction.annotation.Transactional) or @within(org.springframework.transaction.annotation.Transactional)'/>
+            <aop:before pointcut-ref='tx2' method='before' />              
+        </aop:aspect>
+    </aop:config>
+    
+    <!--分布式事物管理-->
+    <bean id='JTATransactionalAspect' class='net.joystart.common.jta.JTATransactionalAspect' />   
+    <aop:config proxy-target-class='true'>
+        <aop:aspect id='JTATransactionalAspect' ref='JTATransactionalAspect' order='3'>   
+            <aop:pointcut id='tx3' expression='@annotation(net.joystart.common.jta.JTATransactional)'/>
+            <aop:before pointcut-ref='tx3' method='before' />
+            <aop:after-returning pointcut-ref='tx3' method="afterReturn"/> 
+            <aop:after-throwing pointcut-ref='tx3' method="afterThrowing" throwing="ex"/>             
+        </aop:aspect>
+    </aop:config>
+	<!-- 数据库配置结束 -->
+	
+	<!--  dubbo配置-->
+    <bean:import resource="dubbo.xml"/>
+		
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="defaultEncoding" value="utf-8"></property>
+		<property name="maxUploadSize" value="10485760000"></property>
+		<property name="maxInMemorySize" value="40960"></property>
+	</bean>
+
+	<!-- 界面提示语言国际化配置 -->
+	<bean
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
+		id="messageSource" p:basenames="WEB-INF/i18n/site"
+		p:fallbackToSystemLocale="false" p:defaultEncoding="UTF-8" p:cacheSeconds="0"/>
+	
+</beans>  

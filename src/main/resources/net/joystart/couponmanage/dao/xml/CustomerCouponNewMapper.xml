@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.couponmanage.dao.CustomerCouponNewMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.couponmanage.entity.CustomerCouponNew" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="customerid" property="customerId" jdbcType="INTEGER" />
+    <result column="coupon_config_id" property="couponConfigId" jdbcType="INTEGER" />
+    <result column="coupon_name" property="couponName" jdbcType="VARCHAR" />
+    <result column="coupon_no" property="couponNo" jdbcType="VARCHAR" />
+    <result column="isenable" property="isEnable" jdbcType="INTEGER" />
+    <result column="isdelete" property="isDelete" jdbcType="INTEGER" />
+    <result column="isused" property="isUsed" jdbcType="INTEGER" />
+    <result column="source_type" property="sourceType" jdbcType="TINYINT" />
+    <result column="source_id" property="sourceId" jdbcType="INTEGER" />
+    <result column="createdate" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="expiredate" property="expireDate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <resultMap id="BaseResultMapVO" type="net.joystart.couponmanage.entity.CustomerCouponNewVO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="customerid" property="customerId" jdbcType="INTEGER" />
+    <result column="coupon_config_id" property="couponConfigId" jdbcType="INTEGER" />
+    <result column="coupon_name" property="couponName" jdbcType="VARCHAR" />
+    <result column="coupon_no" property="couponNo" jdbcType="VARCHAR" />
+    <result column="isenable" property="isEnable" jdbcType="INTEGER" />
+    <result column="isdelete" property="isDelete" jdbcType="INTEGER" />
+    <result column="isused" property="isUsed" jdbcType="INTEGER" />
+    <result column="useddate" property="usedDate" jdbcType="TIMESTAMP" />
+    <result column="source_type" property="sourceType" jdbcType="TINYINT" />
+    <result column="source_id" property="sourceId" jdbcType="INTEGER" />
+    <result column="createdate" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="expiredate" property="expireDate" jdbcType="TIMESTAMP" />
+    
+    <result column="configName" property="configName" jdbcType="VARCHAR" />
+    <result column="couponType" property="couponType" jdbcType="INTEGER" />
+    <result column="discountPercent" property="discountPercent" jdbcType="INTEGER" />
+    <result column="maxDeductionMoney" property="maxDeductionMoney" jdbcType="DECIMAL" />
+    <result column="couponMoney" property="couponMoney" jdbcType="DECIMAL" />
+    <result column="validateDay" property="validateDay" jdbcType="INTEGER" />
+    <result column="useCityId" property="useCityId" jdbcType="VARCHAR" />
+    <result column="useWeekDay" property="useWeekDay" jdbcType="VARCHAR" />
+    <result column="useUpperTime" property="useUpperTime" jdbcType="VARCHAR" />
+    <result column="useLowerTime" property="useLowerTime" jdbcType="VARCHAR" />
+    <result column="baseOrderMoney" property="baseOrderMoney" jdbcType="DECIMAL" />
+    <result column="useVehicleModeId" property="useVehicleModeId" jdbcType="VARCHAR" />
+    <result column="appDiscription" property="appDiscription" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="orderNo" property="orderNo" jdbcType="VARCHAR" />
+    
+  </resultMap>
+  
+  
+  <sql id="Base_Column_List" >
+    id, customerid, coupon_config_id, coupon_name, coupon_no, isenable,isdelete, isused,useddate, source_type,source_id,
+    createdate, expiredate, modifydate
+  </sql>
+  
+  <select id="getCustomerCouponNewList" parameterType="Map" resultMap="BaseResultMapVO" >
+  	SELECT 
+	    couponnew.*,
+	    config.configName,
+	    config.couponType,
+	    config.discountPercent,
+	    config.maxDeductionMoney,
+	    config.couponMoney,
+	    config.validateDay,
+	    config.useCityId,
+	    config.useWeekDay,
+	    config.useUpperTime,
+	    config.useLowerTime,
+	    config.baseOrderMoney,
+	    config.useVehicleModeId,
+	    config.appDiscription,
+	    cus.mobile,
+	    o.orderNo
+	FROM
+	    (SELECT 
+	        couponnew.id,
+            couponnew.customerid,
+            couponnew.coupon_config_id,
+            couponnew.coupon_name,
+            couponnew.coupon_no,
+            couponnew.isenable,
+            couponnew.isused,
+            couponnew.useddate,
+            couponnew.source_type,
+            couponnew.createdate,
+            couponnew.expiredate
+	    FROM
+	        t_base_customer_coupon_new couponnew
+	        <if test="mobile != null">
+				INNER JOIN t_base_customer cus ON couponnew.customerid = cus.id
+			</if>
+			<where>
+			    couponnew.isdelete = 1
+				<if test="couponNo != null">
+					and couponnew.coupon_no like concat('%',#{couponNo},'%')
+				</if>
+				<if test="customerId != null">
+					and customerid = #{customerId}
+				</if>
+				<if test="mobile != null">
+					and cus.mobile =#{mobile}
+				</if>
+				<if test="isEnable != null">
+					and couponnew.isenable = #{isEnable}
+				</if>
+				<if test="isUsed != null">
+					<choose>
+						 <when test="isUsed == 1">
+						 	and couponnew.isused = 1
+						 	<![CDATA[
+							and couponnew.expiredate >= DATE_FORMAT(NOW(),'%Y-%m-%d')
+							]]>
+						 </when>
+						 <when test="isUsed == 2">
+						 	and couponnew.isused = 2
+						 </when>
+						 <when test="isUsed == 3">
+						 	and couponnew.isused = 1
+							<![CDATA[
+							and couponnew.expiredate < DATE_FORMAT(NOW(),'%Y-%m-%d')
+							]]>
+						 </when>
+					</choose>
+				</if>
+				<if test="expireDate != null">
+					<![CDATA[
+					and couponnew.expiredate >= DATE_FORMAT(#{expireDate},'%Y-%m-%d')
+					]]>
+				</if>
+				<if test="sourceType != null">
+					<choose>
+						 <when test="sourceType == 2">
+						 	and couponnew.source_type in (2,11)
+						 </when>
+						 <otherwise>
+							and couponnew.source_type = #{sourceType}
+						 </otherwise>
+					</choose>
+				</if>
+				<if test="createDateStart != null">
+					<![CDATA[
+					and couponnew.createdate >= #{createDateStart}
+					]]>
+				</if>
+				<if test="createDateEnd != null">
+					<![CDATA[
+					and couponnew.createdate <= #{createDateEnd}
+					]]>
+				</if>
+			</where>
+			order by couponnew.id desc 
+			<if test="startIndex != null">
+		        LIMIT #{startIndex}, #{pageSize}
+		    </if>
+	    ) couponnew
+	        LEFT JOIN
+	    t_base_coupon_use_config config ON couponnew.coupon_config_id = config.id
+	        LEFT JOIN
+	    t_order_coupon ocoupon ON couponnew.id = ocoupon.couponId
+	        LEFT JOIN
+	    t_order o ON ocoupon.orderId = o.id
+	        LEFT JOIN
+	    t_base_customer cus ON couponnew.customerid = cus.id
+  </select>
+  
+  <select id="getCustomerCouponNewCount" parameterType="Map" resultType="java.lang.Integer" >
+    select count(1) as countoo from (
+        SELECT 1 FROM t_base_customer_coupon_new couponnew
+	        <if test="mobile != null">
+				INNER JOIN t_base_customer cus ON couponnew.customerid = cus.id
+			</if>
+			<where>
+			    couponnew.isdelete = 1
+				<if test="couponNo != null">
+					and couponnew.coupon_no like concat('%',#{couponNo},'%')
+				</if>
+				<if test="customerId != null">
+					and customerid = #{customerId}
+				</if>
+				<if test="mobile != null">
+					and cus.mobile =#{mobile}
+				</if>
+				<if test="isUsed != null">
+					and couponnew.isused = #{isUsed}
+				</if>
+				<if test="expireDate != null">
+					<![CDATA[
+					and couponnew.expiredate <= DATE_FORMAT(#{expireDate},'%Y-%m-%d')
+					]]>
+				</if>
+				<if test="sourceType != null">
+					and couponnew.source_type = #{sourceType}
+				</if>
+				<if test="createDateStart != null">
+					<![CDATA[
+					and couponnew.createdate >= #{createDateStart}
+					]]>
+				</if>
+				<if test="createDateEnd != null">
+					<![CDATA[
+					and couponnew.createdate <= #{createDateEnd}
+					]]>
+				</if>
+			</where>
+    ) a
+  </select>
+  
+  <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_base_customer_coupon_new
+    where id = #{id,jdbcType=INTEGER} and isdelete = 1
+  </select>
+  
+ <select id="selectByOrderId" resultMap="BaseResultMapVO" parameterType="java.lang.Integer" >
+    select 
+    	c.*,
+	    u.configName,
+	    u.couponType,
+	    u.discountPercent,
+	    u.maxDeductionMoney,
+	    u.couponMoney,
+	    u.validateDay,
+	    u.useCityId,
+	    u.useWeekDay,
+	    u.useUpperTime,
+	    u.useLowerTime,
+	    u.baseOrderMoney,
+	    u.useVehicleModeId,
+	    u.appDiscription
+    from t_base_customer_coupon_new c 
+    LEFT JOIN t_base_coupon_use_config u ON c.coupon_config_id = u.id
+    LEFT JOIN t_order_coupon o ON c.id = o.couponId
+    where o.orderId = #{orderId,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectCustomerCouponConfig" parameterType="Map" resultType="net.joystart.couponmanage.entity.CouponUseConfig">
+  	SELECT u.* from t_base_customer_coupon_new c inner join t_base_coupon_use_config u on c.coupon_config_id = u.id
+  	where c.isdelete = 1 and c.id=#{id}
+  </select>
+  
+  <select id="selectHistoryCoupon" parameterType="Map" resultMap="BaseResultMapVO">
+  	SELECT * FROM t_base_customer_coupon_new c 
+	LEFT JOIN t_base_coupon_use_config u on c.coupon_config_id = u.id
+	where c.customerid = #{customerId} 
+	and (
+		<![CDATA[c.expiredate < DATE_FORMAT(#{expireDate},'%Y-%m-%d')]]>
+		or c.isused = 2)
+	order by c.createdate desc
+	limit #{pageIndex}, #{pageSize};
+  </select>
+  
+  <select id="getCouponCodeIsExists" resultType="java.lang.Integer" parameterType="java.lang.String">
+  	SELECT sum(c) from (
+		select count(1) c from t_base_customer_coupon_new where coupon_no = #{couponCode,jdbcType=VARCHAR}
+		UNION
+		select count(1) c from t_base_customer_coupon where couponCode = #{couponCode,jdbcType=VARCHAR}
+	)t
+  </select>
+ 
+  <insert id="insert" parameterType="net.joystart.couponmanage.entity.CustomerCouponNew" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    
+    insert into t_base_customer_coupon_new (customerid, coupon_config_id, coupon_name, 
+      coupon_no, isenable, source_type,source_id,
+      isused, createdate, expiredate)
+    VALUES
+    <foreach collection="list" item="item" index="index" separator="," >  
+        (#{item.customerId},#{item.couponConfigId}, #{item.couponName},#{item.couponNo},#{item.isEnable},
+         #{item.sourceType},#{item.sourceId},#{item.isUsed},#{item.createDate},#{item.expireDate}
+        )
+    </foreach> 
+  </insert>
+  
+  <update id="updateCustomerCouponNew" parameterType="net.joystart.couponmanage.entity.CustomerCouponNew" >
+    update t_base_customer_coupon_new
+    <set>
+      <if test="isEnable != null" >
+        isenable = #{isEnable},
+      </if>
+      <if test="expireDate != null" >
+        expiredate = #{expireDate},
+      </if>
+      <if test="isUsed != null" >
+        isused = #{isUsed},
+      </if>
+      <if test="usedDate != null" >
+        useddate = #{usedDate},
+      </if>
+      modifydate = now()
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateCustomerCouponNewIsUsed" parameterType="Integer" >
+    update t_base_customer_coupon_new set isused = 2 ,useddate = now() where id = #{id,jdbcType=INTEGER}
+  </update>
+  
+  <update id="deleteCustomerCouponNew" parameterType="java.util.List">
+    update t_base_customer_coupon_new set isdelete = 2 
+    where id in 
+    <foreach collection="list" item="value" open="(" separator="," close=")">
+        #{value}
+    </foreach>
+  </update>
+  
+  
+  <select id="getCustomerCouponNewVOByCouponId" parameterType="Integer"  resultMap="BaseResultMapVO" >
+  	SELECT 
+	    couponnew.id,
+        couponnew.customerid,
+        couponnew.coupon_config_id,
+        couponnew.coupon_name,
+        couponnew.coupon_no,
+        couponnew.isenable,
+        couponnew.isused,
+        couponnew.useddate,
+        couponnew.source_type,
+        couponnew.createdate,
+        couponnew.expiredate,
+	    config.configName,
+	    config.couponType,
+	    config.discountPercent,
+	    config.maxDeductionMoney,
+	    config.couponMoney,
+	    config.validateDay,
+	    config.useCityId,
+	    config.useWeekDay,
+	    config.useUpperTime,
+	    config.useLowerTime,
+	    config.baseOrderMoney,
+	    config.useVehicleModeId,
+	    config.appDiscription
+	    FROM
+	        t_base_customer_coupon_new couponnew
+			INNER JOIN
+	    t_base_coupon_use_config config ON couponnew.coupon_config_id = config.id
+			 WHERE   couponnew.isdelete = 1 and couponnew.id=#{id,jdbcType=INTEGER}
+  </select>
+  
+</mapper>

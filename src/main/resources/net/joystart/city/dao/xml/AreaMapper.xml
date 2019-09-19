@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.city.dao.AreaMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.city.entity.Area" >
+    <id column="id" property="id" jdbcType="BIGINT" />
+    <result column="orders" property="orders" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="tree_path" property="treePath" jdbcType="VARCHAR" />
+    <result column="parent" property="parent" jdbcType="BIGINT" />
+    <result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="net.joystart.city.entity.Area" extends="BaseResultMap" >
+    <result column="full_name" property="full_name" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, orders, name, tree_path, parent, createDate, modifyDate
+  </sql>
+  <sql id="Blob_Column_List" >
+    full_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_base_area
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from t_base_area
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="net.joystart.city.entity.Area" >
+    insert into t_base_area (id, orders, name, 
+      tree_path, parent, createDate, 
+      modifyDate, full_name)
+    values (#{id,jdbcType=BIGINT}, #{orders,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{treePath,jdbcType=VARCHAR}, #{parent,jdbcType=BIGINT}, #{createdate,jdbcType=TIMESTAMP}, 
+      #{modifydate,jdbcType=TIMESTAMP}, #{fullName,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="net.joystart.city.entity.Area" >
+    insert into t_base_area
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="orders != null" >
+        orders,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="treePath != null" >
+        tree_path,
+      </if>
+      <if test="parent != null" >
+        parent,
+      </if>
+      <if test="createdate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+      <if test="fullName != null" >
+        full_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orders != null" >
+        #{orders,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="treePath != null" >
+        #{treePath,jdbcType=VARCHAR},
+      </if>
+      <if test="parent != null" >
+        #{parent,jdbcType=BIGINT},
+      </if>
+      <if test="createdate != null" >
+        #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fullName != null" >
+        #{fullName,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.joystart.city.entity.Area" >
+    update t_base_area
+    <set >
+      <if test="orders != null" >
+        orders = #{orders,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="treePath != null" >
+        tree_path = #{treePath,jdbcType=VARCHAR},
+      </if>
+      <if test="parent != null" >
+        parent = #{parent,jdbcType=BIGINT},
+      </if>
+      <if test="createdate != null" >
+        createDate = #{createdate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="fullName != null" >
+        full_name = #{fullName,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="net.joystart.city.entity.Area" >
+    update t_base_area
+    set orders = #{orders,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      tree_path = #{treePath,jdbcType=VARCHAR},
+      parent = #{parent,jdbcType=BIGINT},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      full_name = #{fullName,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.joystart.city.entity.Area" >
+    update t_base_area
+    set orders = #{orders,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      tree_path = #{treePath,jdbcType=VARCHAR},
+      parent = #{parent,jdbcType=BIGINT},
+      createDate = #{createdate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="getProvince"  resultType="net.joystart.city.entity.Area">
+   SELECT 
+		`id`,
+		`full_name`,
+		`name` 
+	FROM
+		`t_base_area`
+	where parent is null
+  </select>
+  
+  <select id="getCityOrCounty" parameterType="java.lang.Long"  resultType="net.joystart.city.entity.Area">
+   SELECT 
+		`id`,
+		`full_name`,
+		`name` 
+	FROM
+		`t_base_area`
+	where parent = #{parent,jdbcType=BIGINT}
+	order by orders
+  </select>
+</mapper>

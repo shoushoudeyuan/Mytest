@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.customerservice.dao.QuestionCategoryMapper" >
+  <resultMap id="BaseResultMap" type="net.joystart.customerservice.entity.QuestionCategory" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="parentId" property="parentid" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="sortNo" property="sortno" jdbcType="INTEGER" />
+    <result column="level" property="level" jdbcType="INTEGER" />
+    <result column="isLeaf" property="isleaf" jdbcType="INTEGER" />
+    <result column="createDate" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, parentId, name, sortNo, level, isLeaf, createDate, modifyDate
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_service_question_category
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 获取问题列表 -->
+  <select id="getAllQuestionCategories" resultMap="BaseResultMap" >
+    select 
+    qc.id,
+    qc.name,
+    (select name from t_service_question_category where id=qc.parentId) as parentname
+    from t_service_question_category qc
+    where qc.isLeaf=1
+    order by qc.parentId,qc.sortNo
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_service_question_category
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="net.joystart.customerservice.entity.QuestionCategory" >
+    insert into t_service_question_category (id, parentId, name, 
+      sortNo, level, isLeaf, 
+      createDate, modifyDate)
+    values (#{id,jdbcType=INTEGER}, #{parentid,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, 
+      #{sortno,jdbcType=INTEGER}, #{level,jdbcType=INTEGER}, #{isleaf,jdbcType=INTEGER}, 
+      #{createDate,jdbcType=TIMESTAMP}, #{modifydate,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="net.joystart.customerservice.entity.QuestionCategory" >
+    insert into t_service_question_category
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="parentid != null" >
+        parentId,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="sortno != null" >
+        sortNo,
+      </if>
+      <if test="level != null" >
+        level,
+      </if>
+      <if test="isleaf != null" >
+        isLeaf,
+      </if>
+      <if test="createDate != null" >
+        createDate,
+      </if>
+      <if test="modifydate != null" >
+        modifyDate,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="parentid != null" >
+        #{parentid,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sortno != null" >
+        #{sortno,jdbcType=INTEGER},
+      </if>
+      <if test="level != null" >
+        #{level,jdbcType=INTEGER},
+      </if>
+      <if test="isleaf != null" >
+        #{isleaf,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="net.joystart.customerservice.entity.QuestionCategory" >
+    update t_service_question_category
+    <set >
+      <if test="parentid != null" >
+        parentId = #{parentid,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="sortno != null" >
+        sortNo = #{sortno,jdbcType=INTEGER},
+      </if>
+      <if test="level != null" >
+        level = #{level,jdbcType=INTEGER},
+      </if>
+      <if test="isleaf != null" >
+        isLeaf = #{isleaf,jdbcType=INTEGER},
+      </if>
+      <if test="createDate != null" >
+        createDate = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="modifydate != null" >
+        modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="net.joystart.customerservice.entity.QuestionCategory" >
+    update t_service_question_category
+    set parentId = #{parentid,jdbcType=INTEGER},
+      name = #{name,jdbcType=VARCHAR},
+      sortNo = #{sortno,jdbcType=INTEGER},
+      level = #{level,jdbcType=INTEGER},
+      isLeaf = #{isleaf,jdbcType=INTEGER},
+      createDate = #{createDate,jdbcType=TIMESTAMP},
+      modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

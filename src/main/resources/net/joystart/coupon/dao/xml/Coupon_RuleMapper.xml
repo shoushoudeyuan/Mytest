@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="net.joystart.coupon.dao.Coupon_RuleMapper">
+	<resultMap id="BaseResultMap" type="net.joystart.coupon.entity.CouponRule">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="ruleName" property="rulename" jdbcType="VARCHAR" />
+		<result column="status" property="status" jdbcType="TINYINT" />
+		<result column="identification" property="identification"
+			jdbcType="VARCHAR" />
+		<result column="isSystem" property="issystem" jdbcType="TINYINT" />
+		<result column="createDate" property="createdate" jdbcType="TIMESTAMP" />
+		<result column="modifyDate" property="modifydate" jdbcType="TIMESTAMP" />
+		<result column="isDelete" property="isdelete" jdbcType="TINYINT" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, ruleName, status, identification, isSystem, createDate,
+		modifyDate,isDelete
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from t_base_coupon_rule
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<!-- 查询优惠券规则的键值对,用于下拉框 -->
+	<select id="getCouponRuleKeyValueList" resultType="net.joystart.coupon.entity.CouponRule">
+		select
+		id,
+		rulename
+		from t_base_coupon_rule
+		where isDelete=0 
+		and isSystem=0
+		and status=1
+	</select>
+
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+		delete from t_base_coupon_rule
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+	<insert id="insert" parameterType="net.joystart.coupon.entity.CouponRule">
+		insert into t_base_coupon_rule (id, ruleName, status,
+		identification, isSystem, createDate,
+		modifyDate)
+		values (#{id,jdbcType=INTEGER}, #{rulename,jdbcType=VARCHAR},
+		#{status,jdbcType=TINYINT},
+		#{identification,jdbcType=VARCHAR}, #{issystem,jdbcType=TINYINT}, #{createdate,jdbcType=TIMESTAMP},
+		#{modifydate,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="net.joystart.coupon.entity.CouponRule">
+		insert into t_base_coupon_rule
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="rulename != null">
+				ruleName,
+			</if>
+			<if test="status != null">
+				status,
+			</if>
+			<if test="identification != null">
+				identification,
+			</if>
+			<if test="issystem != null">
+				isSystem,
+			</if>
+			<if test="createdate != null">
+				createDate,
+			</if>
+			<if test="modifydate != null">
+				modifyDate,
+			</if>
+			<if test="isdelete != null">
+				isdelete,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="rulename != null">
+				#{rulename,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				#{status,jdbcType=TINYINT},
+			</if>
+			<if test="identification != null">
+				#{identification,jdbcType=VARCHAR},
+			</if>
+			<if test="issystem != null">
+				#{issystem,jdbcType=TINYINT},
+			</if>
+			<if test="createdate != null">
+				#{createdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifydate != null">
+				#{modifydate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isdelete != null">
+				#{isdelete,jdbcType=TINYINT},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="net.joystart.coupon.entity.CouponRule">
+		update t_base_coupon_rule
+		<set>
+			<if test="rulename != null">
+				ruleName = #{rulename,jdbcType=VARCHAR},
+			</if>
+			<if test="status != null">
+				status = #{status,jdbcType=TINYINT},
+			</if>
+			<if test="identification != null">
+				identification = #{identification,jdbcType=VARCHAR},
+			</if>
+			<if test="issystem != null">
+				isSystem = #{issystem,jdbcType=TINYINT},
+			</if>
+			<if test="createdate != null">
+				createDate = #{createdate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="modifydate != null">
+				modifyDate = #{modifydate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isdelete != null">
+				isdelete = #{isdelete,jdbcType=TINYINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="net.joystart.coupon.entity.CouponRule">
+		update t_base_coupon_rule
+		set ruleName = #{rulename,jdbcType=VARCHAR},
+		status = #{status,jdbcType=TINYINT},
+		identification = #{identification,jdbcType=VARCHAR},
+		isSystem = #{issystem,jdbcType=TINYINT},
+		createDate = #{createdate,jdbcType=TIMESTAMP},
+		modifyDate = #{modifydate,jdbcType=TIMESTAMP}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+	<select id="selectAll" resultMap="BaseResultMap" parameterType="java.util.HashMap">
+		select
+		<include refid="Base_Column_List" />
+		from t_base_coupon_rule
+		where isDelete = 0
+		<if test="rulename != null">
+			and ruleName like #{rulename,jdbcType=VARCHAR}
+		</if>
+		LIMIT #{startIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER};
+	</select>
+	<select id="selectAllCount" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select
+			count(id) as count
+		from t_base_coupon_rule
+		where isDelete = 0
+		<if test="rulename != null">
+			and ruleName like #{rulename,jdbcType=VARCHAR}
+		</if>
+	</select>	
+	<select id="selectByName" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select
+			<include refid="Base_Column_List" />
+		from t_base_coupon_rule
+		where isDelete = 0 and ruleName = #{rulename,jdbcType=VARCHAR} 
+		<if test="id != null">
+			and id != #{id,jdbcType=INTEGER}
+		</if>
+	</select>	
+	<select id="selectByIdenfition" resultType="java.lang.Integer" parameterType="java.util.HashMap">
+		select
+			<include refid="Base_Column_List" />
+		from t_base_coupon_rule
+		where isDelete = 0 and identification = #{flagname,jdbcType=VARCHAR}
+		<if test="id != null">
+			and id != #{id,jdbcType=INTEGER}
+		</if>
+	</select>	
+</mapper>
