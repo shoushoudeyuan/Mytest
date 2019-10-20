@@ -7,7 +7,7 @@
 <%@ include file="../common/header.jsp"%>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/js/jquery.json.js"></script>
-<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=eOfOqm3LclumR9fg7bIguqcv"> </script>
+<script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=d8Y2ytqiXP2WGUQENmcGQgjWw29aovkg"> </script>
 	<script type="text/javascript"
 	src="${pageContext.request.contextPath}/js/DrawingManager_min.js"></script>
 <script type="text/javascript"
