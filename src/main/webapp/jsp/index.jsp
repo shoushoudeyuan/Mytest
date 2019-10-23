@@ -7,7 +7,7 @@
 <head>
 <meta charset="utf-8" />
 <meta http-equiv="Content-Security-Policy" content="default-src * data: cdvfile: gap:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'"/>
-<title>分时租赁服务管理平台--宝驾云</title>
+<title>魔方分时租赁服务管理平台</title>
 <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
 <link href="${pageContext.request.contextPath}/css/reset.css" rel="stylesheet">
 <link
@@ -48,7 +48,7 @@
 			<div class="title cl">
 				<ul>
 				    <li>
-                     <a href="${pageContext.request.contextPath}/img/saasServicePrice.pdf" target="_blank"  title="宝驾易租云SaaS系统服务价格明细.pdf">
+                     <a href="${pageContext.request.contextPath}/img/saasServicePrice.pdf" target="_blank"  title="魔方出行系统服务价格明细.pdf">
                                                                           服务明细
                      </a>
                     </li>

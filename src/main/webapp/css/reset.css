@@ -51,7 +51,7 @@ input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit
 .cl:after,.clearfix:after{content:".";display:block;height:0;clear:both;visibility:hidden}
 .cl,.clearfix{zoom:1}
 
-/*宝驾弹出*/
+/*魔方弹出*/
 .bj_mask{position:fixed;z-index:90;width:100%;height:100%;left:0;top:0;background-color:#ccc;opacity:0.6;font-size:16px;}
 .bj_mask{filter:progid:DXImageTransform.Microsoft.Alpha(opacity=70)}
 .bj_tip{position:fixed;z-index:100;border-radius:2px;z-index:999999;background:#fee5e5;}
@@ -71,7 +71,7 @@ input[type="search"]::-webkit-search-cancel-button,input[type="search"]::-webkit
 .verify_success{border:1px solid #fc4242}
 .verify_error{border:1px solid #4dbd74;}
 
-/*宝驾弹出*/
+/*魔方弹出*/
 .pos_a_c{position:absolute;top: 50%;left: 50%;-webkit-transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);-moz-transform: translate(-50%,-50%);transform: translate(-50%,-50%);}
 .pos_f_c{position:fixed;top: 50%;left: 50%;-webkit-transform: translate(-50%,-50%);-ms-transform: translate(-50%,-50%);-moz-transform: translate(-50%,-50%);transform: translate(-50%,-50%);}
 .load-container{width:10rem;height:10rem;float:left;position:relative;overflow:hidden;-moz-box-sizing:border-box;box-sizing:border-box;background-color:#d2d2d2;border-radius:1rem}
